@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Viva com Cuidado — os dois aparelhos</title>
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="icones/icone-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:wght@700;900&display=swap">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<div class="demo-topo">
+  <h1>Os dois aparelhos, lado a lado</h1>
+  <p class="linha-fina">É o mesmo app rodando duas vezes, na mesma casa. O que você faz de um lado aparece no outro na hora — é exatamente o que acontece entre dois celulares.</p>
+
+  <div class="roteiro">
+    <div class="passo"><span class="n">1</span><p><b>À esquerda</b>, cadastre um remédio novo.</p></div>
+    <div class="passo"><span class="n">2</span><p><b>À direita</b>, ele já apareceu em Meus Remédios.</p></div>
+    <div class="passo"><span class="n">3</span><p><b>À direita</b>, toque em <b>Tomei</b>.</p></div>
+    <div class="passo"><span class="n">4</span><p><b>À esquerda</b>, o relatório do dia mudou.</p></div>
+  </div>
+</div>
+
+<div class="demo-barra">
+  <button class="botao claro" data-acao="lembrete">Mostrar o lembrete do horário</button>
+  <button class="botao claro" data-acao="recomecar">Recomeçar a demonstração</button>
+  <a class="botao claro" href="index.html" style="text-decoration:none">Abrir o app de verdade</a>
+</div>
+
+<div class="palco">
+  <div class="fone">
+    <div class="fone-rot"><span class="pino" style="background: var(--consulta)"></span>Celular de quem cuida</div>
+    <div class="fone-corpo"><div class="fone-tela" data-el="fone-resp"></div></div>
+  </div>
+  <div class="fone">
+    <div class="fone-rot"><span class="pino" style="background: var(--remedio)"></span>Celular da pessoa cuidada</div>
+    <div class="fone-corpo"><div class="fone-tela" data-el="fone-idoso"></div></div>
+  </div>
+</div>
+
+<div class="agenda" id="agenda"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="js/figuras.js"></script>
+<script src="js/dados.js"></script>
+<script src="js/telas.js"></script>
+
+<script>
+/* A demonstração é uma casa como qualquer outra — o nome dela é DEMO.
+   Se o Firebase estiver configurado, você pode abrir esta mesma página
+   em dois computadores e eles também se veem. */
+(function () {
+  "use strict";
+  function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
+
+  Casa.ligarServidor();
+  Casa.abrir("DEMO", "responsavel");
+
+  var quemCuida = criarApp(el("fone-resp"), "responsavel", .74);
+  var pessoaCuidada = criarApp(el("fone-idoso"), "idoso", .74);
+
+  document.querySelector(".demo-barra").addEventListener("click", function (ev) {
+    var alvo = ev.target.closest("button");
+    if (!alvo) return;
+    if (alvo.dataset.acao === "lembrete") return pessoaCuidada.mostrarLembrete();
+    if (alvo.dataset.acao === "recomecar") return Casa.recomecar();
+  });
+})();
+</script>
+</body>
+</html>

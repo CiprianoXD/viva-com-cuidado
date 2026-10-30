@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Viva com Cuidado</title>
+<meta name="description" content="Remédios, exercícios, consultas e ajuda — em um lugar só.">
+
+<!-- instalação no celular -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="icon" href="icones/icone-192.png">
+<link rel="apple-touch-icon" href="icones/icone-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Viva Cuidado">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:wght@700;900&display=swap">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<!-- ===================== PRIMEIRA ABERTURA ===================== -->
+<div class="abertura" id="tela-parear">
+  <div class="abertura-caixa">
+
+    <div data-passo="inicio">
+      <div class="marca-alta">
+        <img src="icones/icone-192.png" alt="" width="84" height="84">
+        <h1>Viva com Cuidado</h1>
+        <p>Dois aparelhos ligados: quem cuida cadastra, quem é cuidado confirma.</p>
+      </div>
+
+      <p class="pergunta-forte">Este aparelho é de quem?</p>
+      <div class="escolhas">
+        <button class="escolha" data-acao="quero-cuidar">
+          <span data-el="fig-cuida"></span>
+          <span><b>Sou quem cuida</b><span class="apoio">Cadastro os remédios e acompanho o dia</span></span>
+        </button>
+
+        <button class="escolha" data-acao="quero-ser-cuidado">
+          <span data-el="fig-cuidado"></span>
+          <span><b>Sou a pessoa cuidada</b><span class="apoio">Vejo o que tenho para hoje e confirmo</span></span>
+        </button>
+      </div>
+
+      <a class="link-discreto" href="demonstracao.html" style="text-align:center; text-decoration:none">Ver os dois aparelhos funcionando</a>
+      <div class="status-linha"><span class="bolinha" data-el="bolinha-parear"></span><span data-el="status-parear">Verificando…</span></div>
+    </div>
+
+    <div data-passo="codigo-novo" hidden>
+      <div class="marca-alta">
+        <h1>Código da casa</h1>
+        <p>Anote. Você vai digitá-lo uma vez no celular de quem você cuida.</p>
+      </div>
+      <div class="codigo-grande" data-el="codigo-novo"></div>
+      <button class="botao" data-acao="confirmar-cuidador">Continuar</button>
+      <button class="voltar-txt" data-acao="tenho-codigo">Já tenho um código</button>
+    </div>
+
+    <div data-passo="pedir-codigo" hidden>
+      <div class="marca-alta">
+        <h1>Digite o código</h1>
+        <p>É o código que aparece no celular de quem cuida. Seis letras e números.</p>
+      </div>
+      <input class="campo-codigo" data-el="entrada-codigo" maxlength="6" autocapitalize="characters" autocomplete="off" inputmode="text" aria-label="Código da casa">
+      <p class="erro" data-el="erro-codigo" hidden></p>
+      <div class="campos"><button class="botao" data-acao="entrar-codigo">Entrar</button></div>
+      <button class="voltar-txt" data-acao="voltar-inicio">Voltar</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== O APP ===================== -->
+<div id="palco-app" hidden></div>
+
+<!-- ===================== AGENDA DE PAPEL ===================== -->
+<div class="agenda" id="agenda"></div>
+
+<!-- Firebase: só entra em ação se o config.js estiver preenchido. -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="config.js"></script>
+<script src="js/figuras.js"></script>
+<script src="js/dados.js"></script>
+<script src="js/telas.js"></script>
+
+<script>
+/* ============================================================
+   ESTE APARELHO — lembra quem ele é e abre o app certo.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var ALFABETO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // sem I, O, 0 e 1: confundem
+  var telaParear = document.getElementById("tela-parear");
+  var palcoApp = document.getElementById("palco-app");
+  var codigoNovo = null;
+
+  function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
+  function guardar(c, v) { try { localStorage.setItem(c, JSON.stringify(v)); } catch (e) {} }
+  function buscar(c) { try { var v = localStorage.getItem(c); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+
+  function sorteioCodigo() {
+    var s = "";
+    for (var i = 0; i < 6; i++) s += ALFABETO[Math.floor(Math.random() * ALFABETO.length)];
+    return s;
+  }
+
+  function passo(qual) {
+    [].forEach.call(document.querySelectorAll("[data-passo]"), function (p) {
+      p.hidden = p.dataset.passo !== qual;
+    });
+  }
+
+  var Aparelho = {
+    app: null,
+
+    ligar: function (papel, codigo) {
+      guardar("viva:aparelho", { papel: papel, codigo: codigo });
+      this.abrir(papel, codigo);
+    },
+
+    abrir: function (papel, codigo) {
+      this.fechar();
+      telaParear.hidden = true;
+      palcoApp.hidden = false;
+      Casa.abrir(codigo, papel);
+      this.app = criarApp(palcoApp, papel);
+    },
+
+    desligar: function () {
+      try { localStorage.removeItem("viva:aparelho"); } catch (e) {}
+      this.fechar();
+      Casa.fechar();
+      palcoApp.hidden = true;
+      telaParear.hidden = false;
+      passo("inicio");
+      pintarStatusParear();
+    },
+
+    fechar: function () {
+      if (this.app) { this.app.destruir(); this.app = null; }
+      Casa.esquecerTodos();
+    }
+  };
+  window.Aparelho = Aparelho;
+
+  // ---------- toques da tela de pareamento ----------
+  telaParear.addEventListener("click", function (ev) {
+    var alvo = ev.target.closest("button");
+    if (!alvo) return;
+    var acao = alvo.dataset.acao;
+
+    if (acao === "quero-cuidar") {
+      codigoNovo = sorteioCodigo();
+      el("codigo-novo").textContent = codigoNovo;
+      return passo("codigo-novo");
+    }
+    if (acao === "confirmar-cuidador") return Aparelho.ligar("responsavel", codigoNovo);
+
+    if (acao === "tenho-codigo" || acao === "quero-ser-cuidado") {
+      telaParear.dataset.papel = (acao === "tenho-codigo") ? "responsavel" : "idoso";
+      el("entrada-codigo").value = "";
+      el("erro-codigo").hidden = true;
+      passo("pedir-codigo");
+      return el("entrada-codigo").focus();
+    }
+    if (acao === "voltar-inicio") return passo("inicio");
+
+    if (acao === "entrar-codigo") {
+      var cod = (el("entrada-codigo").value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+      if (cod.length !== 6) {
+        el("erro-codigo").textContent = "O código tem 6 letras ou números.";
+        el("erro-codigo").hidden = false;
+        return el("entrada-codigo").focus();
+      }
+      return Aparelho.ligar(telaParear.dataset.papel || "idoso", cod);
+    }
+  });
+
+  el("entrada-codigo").addEventListener("input", function () {
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  });
+  el("entrada-codigo").addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter") telaParear.querySelector('[data-acao="entrar-codigo"]').click();
+  });
+
+  function pintarStatusParear() {
+    var b = el("bolinha-parear"), t = el("status-parear");
+    if (!Casa.temServidor()) {
+      b.className = "bolinha off";
+      t.textContent = "Sem servidor: cada aparelho guarda os dados por conta própria.";
+    } else if (Casa.estado === "ligada") {
+      b.className = "bolinha ok";
+      t.textContent = "Conexão pronta: os dois aparelhos vão se ver.";
+    } else {
+      b.className = "bolinha";
+      t.textContent = "Procurando conexão…";
+    }
+  }
+
+  // ---------- arranque ----------
+  // as figuras da tela de abertura
+  el("fig-cuida").innerHTML = FIGURA.cuidador(74);
+  el("fig-cuidado").innerHTML = FIGURA.pessoa(74);
+
+  Casa.ligarServidor();
+  Casa.assinar(pintarStatusParear);
+  passo("inicio");
+  pintarStatusParear();
+
+  var lembrado = buscar("viva:aparelho");
+  if (lembrado && lembrado.codigo) Aparelho.abrir(lembrado.papel, lembrado.codigo);
+
+  // ---------- vira app instalável ----------
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+})();
+</script>
+</body>
+</html>

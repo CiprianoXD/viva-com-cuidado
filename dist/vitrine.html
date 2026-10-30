@@ -1,0 +1,1514 @@
+<title>Viva com Cuidado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Playfair+Display:wght@700;900&display=swap">
+
+<style>
+/* ============================================================
+   VIVA COM CUIDADO — aparência
+   ------------------------------------------------------------
+   As regras do desenho, e por quê:
+
+   1. FUNDO BRANCO, TEXTO PRETO. Contraste máximo. Nada de cinza
+      claro sobre branco, nada de texto secundário miúdo.
+   2. FIGURA ANTES DE PALAVRA. Cada assunto tem um desenho colorido
+      grande. Quem tem 80 anos reconhece uma ambulância antes de
+      ler "Ajuda".
+   3. CORES VIVAS E CHEIAS — vermelho é vermelho, verde é verde.
+      Sem tons "elegantes" dessaturados.
+   4. SEM CARTÃO, SEM SOMBRA, SEM MOLDURA. Os itens se separam por
+      um risco fino e por espaço. Moldura em tudo não destaca nada.
+   5. TUDO GRANDE. Alvo de toque nunca abaixo de 72px; os botões de
+      responder são círculos de 78px.
+
+   TEMA ÚNICO, CLARO — de propósito. Este público precisa de uma
+   tela previsível e do maior contraste possível; um modo escuro
+   dobraria o trabalho de manutenção para piorar a leitura.
+
+   ONDE MEXER: as cores estão logo abaixo.
+   ============================================================ */
+
+:root {
+  --branco:   #FFFFFF;
+  --preto:    #111418;
+  --cinza:    #5C6670;   /* usar pouco: só apoio */
+  --risco:    #E3E8ED;
+  --toque:    #F0F4F8;   /* o cinza que aparece quando se aperta */
+
+  --vermelho: #E02020;
+  --verde:    #17A34A;
+  --azul:     #1565D8;
+  --laranja:  #ED7014;
+  --roxo:     #7B2FBE;
+
+  /* tamanho da letra — o A / A+ / A++ mexe no --esc */
+  --esc: 1;
+  --t-apoio:   calc(1.05rem * var(--esc));
+  --t-base:    calc(1.35rem * var(--esc));
+  --t-forte:   calc(1.65rem * var(--esc));
+  --t-titulo:  calc(2.05rem * var(--esc));
+  --t-nome:    calc(2.5rem  * var(--esc));
+  --t-gigante: calc(4.4rem  * var(--esc));
+
+  --topo-seguro:  env(safe-area-inset-top, 0px);
+  --baixo-seguro: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; background: var(--branco); }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--branco);
+  color: var(--preto);
+  font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  font-size: var(--t-base);
+  font-weight: 700;
+  line-height: 1.35;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+:focus-visible { outline: 4px solid var(--azul); outline-offset: 3px; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+.figura { display: block; }
+.relogio { display: block; flex: none; }
+
+/* ============================================================
+   PRIMEIRA ABERTURA
+   ============================================================ */
+.abertura {
+  min-height: 100dvh; display: grid; place-items: center;
+  padding: calc(26px + var(--topo-seguro)) 20px calc(26px + var(--baixo-seguro));
+}
+.abertura-caixa { width: 100%; max-width: 430px; }
+
+.marca-alta { text-align: center; margin-bottom: 30px; }
+.marca-alta img { width: 92px; height: 92px; border-radius: 22px; }
+.marca-alta h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-nome); font-weight: 700; line-height: 1.08;
+  margin: 16px 0 8px; text-wrap: balance;
+}
+.marca-alta p { color: var(--cinza); font-weight: 400; margin: 0; text-wrap: balance; }
+
+.pergunta-forte {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-forte); margin: 0 0 16px; text-align: center;
+}
+
+.escolhas { display: grid; gap: 14px; }
+.escolha {
+  display: flex; align-items: center; gap: 16px; text-align: left;
+  min-height: 104px; padding: 16px;
+  border: 3px solid var(--preto); border-radius: 18px;
+  background: var(--branco);
+}
+.escolha:active { background: var(--toque); }
+.escolha .figura { flex: none; }
+.escolha b { display: block; font-size: var(--t-base); line-height: 1.2; }
+.escolha .apoio { font-size: var(--t-apoio); font-weight: 400; color: var(--cinza); }
+
+.link-discreto {
+  display: block; margin-top: 24px; padding: 18px;
+  text-align: center; color: var(--azul); font-size: var(--t-apoio);
+}
+
+.codigo-grande {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-gigante); letter-spacing: .09em; text-align: center;
+  color: var(--azul); border: 4px solid var(--azul); border-radius: 18px;
+  padding: 22px 10px; margin: 4px 0 22px; word-break: break-all;
+}
+.campo-codigo {
+  width: 100%; text-align: center; text-transform: uppercase;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-nome); letter-spacing: .18em; min-height: 92px;
+}
+
+.status-linha {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin-top: 24px; font-size: var(--t-apoio); font-weight: 400; color: var(--cinza);
+}
+.bolinha { width: 13px; height: 13px; border-radius: 999px; background: var(--cinza); flex: none; }
+.bolinha.ok  { background: var(--verde); }
+.bolinha.off { background: var(--laranja); }
+
+.voltar-txt { display: block; width: 100%; margin-top: 8px; padding: 18px; color: var(--azul); text-decoration: underline; }
+.erro { color: var(--vermelho); text-align: center; margin: 12px 0 0; }
+
+/* ============================================================
+   O APP
+   ============================================================ */
+.app { max-width: 540px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; background: var(--branco); }
+.palco .app { min-height: 100%; }
+
+/* --- topo: branco, com a figura do assunto ao lado do nome --- */
+.topo {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; gap: 14px;
+  padding: calc(14px + var(--topo-seguro)) 16px 14px;
+  background: var(--branco); border-bottom: 3px solid var(--preto);
+}
+.topo .figura { flex: none; }
+.topo h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-titulo); font-weight: 700; margin: 0; flex: 1;
+  line-height: 1.1; text-wrap: balance;
+}
+.btn-voltar {
+  display: flex; align-items: center; gap: 8px; flex: none;
+  min-height: 60px; padding: 0 18px;
+  border: 3px solid var(--preto); border-radius: 14px;
+}
+.btn-voltar:active { background: var(--toque); }
+
+.fonte-ctl { display: flex; flex: none; border: 3px solid var(--preto); border-radius: 14px; overflow: hidden; }
+.fonte-ctl button { min-width: 46px; min-height: 54px; font-family: "Playfair Display", Georgia, serif; font-weight: 700; }
+.fonte-ctl button[aria-pressed="true"] { background: var(--preto); color: var(--branco); }
+.fonte-ctl button + button { border-left: 3px solid var(--preto); }
+.fonte-ctl button:nth-child(2) { font-size: 1.2em; }
+.fonte-ctl button:nth-child(3) { font-size: 1.45em; }
+
+.faixa-espiando {
+  background: var(--roxo); color: var(--branco);
+  padding: 12px 16px; text-align: center; font-size: var(--t-apoio);
+}
+
+.tela { flex: 1; padding: 24px 18px calc(48px + var(--baixo-seguro)); }
+
+/* --- boas-vindas --- */
+.saudacao { text-align: center; padding: 6px 0 26px; }
+.saudacao .oi { font-size: var(--t-base); font-weight: 400; color: var(--cinza); }
+.saudacao .nome {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-nome); line-height: 1.05; margin: 4px 0 10px; text-wrap: balance;
+}
+.saudacao .data { font-size: var(--t-apoio); font-weight: 400; color: var(--cinza); }
+
+/* --- a próxima coisa a fazer --- */
+.agora {
+  display: flex; align-items: center; gap: 16px;
+  border: 3px solid var(--azul); border-radius: 18px;
+  padding: 16px; margin-bottom: 26px;
+}
+.agora.chegou { border-color: var(--vermelho); }
+.agora.pronto { border-color: var(--verde); }
+.agora .txt { flex: 1; min-width: 0; }
+.agora .rot { font-size: var(--t-apoio); font-weight: 400; color: var(--cinza); }
+.agora .val { font-size: var(--t-forte); line-height: 1.15; }
+
+/* --- o menu de 4 --- */
+.menu { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 14px; }
+.menu-item {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px;
+  padding: 14px 8px 18px; border-radius: 18px;
+}
+.menu-item:active { background: var(--toque); }
+.menu-item .rotulo { font-size: var(--t-forte); line-height: 1.15; text-wrap: balance; }
+.menu-item.ajuda .rotulo { color: var(--vermelho); }
+
+.selo {
+  position: absolute; top: 6px; right: 10px;
+  min-width: 42px; height: 42px; padding: 0 10px;
+  display: grid; place-items: center; border-radius: 999px;
+  background: var(--vermelho); color: var(--branco);
+  font-size: var(--t-base); border: 3px solid var(--branco);
+}
+.selo.pronto { background: var(--verde); }
+
+/* ============================================================
+   LISTAS — sem cartão: um risco separa um item do outro
+   ============================================================ */
+.lista { display: flex; flex-direction: column; }
+.item { padding: 22px 0; border-bottom: 2px solid var(--risco); }
+.item:first-child { padding-top: 4px; }
+.item:last-child { border-bottom: 0; }
+
+.item-topo { display: flex; align-items: center; gap: 16px; }
+.item-txt { flex: 1; min-width: 0; }
+.item-txt .hora-txt { font-size: var(--t-base); color: var(--cinza); font-variant-numeric: tabular-nums; }
+.item-txt .principal { font-size: var(--t-forte); line-height: 1.15; }
+.item-txt .apoio { font-size: var(--t-base); font-weight: 400; color: var(--cinza); }
+
+/* o estado responde no próprio item, sem precisar de legenda */
+.item.feito  .item-txt .principal { color: var(--verde); }
+.item.pulado .item-txt .principal { color: var(--vermelho); }
+
+/* --- os dois botões redondos: o coração do app --- */
+/* número de ordem do exercício — substitui a figura repetida */
+.ordem {
+  flex: none; width: 74px; height: 74px; border-radius: 999px;
+  display: grid; place-items: center;
+  background: var(--laranja); color: var(--branco);
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-nome); line-height: 1;
+}
+
+.par { display: flex; justify-content: center; gap: 34px; margin-top: 18px; }
+.resposta { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 4px; }
+.resposta .marca {
+  display: grid; place-items: center;
+  width: 78px; height: 78px; border-radius: 999px;
+  border: 4px solid var(--preto);
+  background: var(--branco);
+  transition: transform .1s ease;
+}
+.resposta .marca svg { display: block; }
+.resposta .rot { font-size: var(--t-apoio); font-weight: 400; color: var(--cinza); }
+.resposta:active .marca { transform: scale(.92); }
+
+.resposta.sim .marca svg { color: var(--verde); }
+.resposta.nao .marca svg { color: var(--vermelho); }
+.resposta[aria-pressed="true"].sim .marca { background: var(--verde); }
+.resposta[aria-pressed="true"].nao .marca { background: var(--vermelho); }
+.resposta[aria-pressed="true"] .marca svg { color: var(--branco); }
+.resposta[aria-pressed="true"] .rot { color: var(--preto); }
+
+.vazio-msg { text-align: center; color: var(--cinza); font-weight: 400; padding: 50px 20px; }
+
+/* ============================================================
+   AJUDA
+   ============================================================ */
+.sos {
+  width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--vermelho); color: var(--branco);
+  border-radius: 20px; padding: 26px 18px; margin-bottom: 10px;
+}
+.sos:active { background: #B31418; }
+.sos .num { font-family: "Playfair Display", Georgia, serif; font-size: var(--t-gigante); line-height: 1; font-variant-numeric: tabular-nums; }
+.sos .leg { font-size: var(--t-forte); }
+.aviso-sos { text-align: center; color: var(--cinza); font-size: var(--t-apoio); font-weight: 400; margin: 0 0 26px; }
+
+.contato { display: flex; align-items: center; gap: 14px; padding: 20px 0; border-bottom: 2px solid var(--risco); }
+.contato:last-child { border-bottom: 0; }
+.contato .quem { flex: 1; min-width: 0; }
+.contato .quem b { display: block; font-size: var(--t-forte); line-height: 1.2; }
+.contato .quem span { font-weight: 400; color: var(--cinza); font-variant-numeric: tabular-nums; }
+.ligar {
+  display: flex; align-items: center; gap: 10px; flex: none;
+  min-height: 68px; padding: 0 20px; border-radius: 14px;
+  background: var(--verde); color: var(--branco);
+}
+.ligar:active { background: #11803A; }
+
+.rodape { padding: 34px 0 0; text-align: center; }
+
+/* ============================================================
+   QUEM CUIDA — aqui pode ser mais denso: é o filho, não o idoso
+   ============================================================ */
+.bloco { padding: 20px 0; border-bottom: 3px solid var(--risco); }
+.bloco:last-child { border-bottom: 0; }
+.bloco > h3 { font-family: "Playfair Display", Georgia, serif; font-size: var(--t-forte); margin: 0 0 10px; }
+.nota { margin: 0 0 14px; color: var(--cinza); font-size: var(--t-apoio); font-weight: 400; }
+
+.campos { display: grid; gap: 12px; margin-top: 14px; }
+.campos.duo { grid-template-columns: 1fr 1fr; }
+label.campo { display: grid; gap: 6px; font-size: var(--t-apoio); color: var(--cinza); font-weight: 400; }
+input, select {
+  font: inherit; font-size: var(--t-base); font-weight: 700;
+  color: var(--preto); background: var(--branco);
+  border: 3px solid var(--preto); border-radius: 12px;
+  padding: 12px; min-height: 62px; width: 100%;
+}
+input:focus, select:focus { outline: none; border-color: var(--azul); }
+
+.botao {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; min-height: 68px; padding: 0 20px; border-radius: 14px;
+  background: var(--azul); color: var(--branco);
+}
+.botao:active { filter: brightness(.88); }
+.botao.claro { background: var(--branco); color: var(--preto); border: 3px solid var(--preto); }
+.botao.claro:active { background: var(--toque); filter: none; }
+.botao.verde { background: var(--verde); }
+.botao.laranja { background: var(--laranja); }
+.botao.roxo { background: var(--roxo); }
+.botao.vermelho { background: var(--vermelho); }
+
+.linha-edit { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 2px solid var(--risco); }
+.linha-edit:last-of-type { border-bottom: 0; }
+.linha-edit .info { flex: 1; min-width: 0; }
+.linha-edit .info span { display: block; font-weight: 400; color: var(--cinza); font-size: var(--t-apoio); }
+.apagar {
+  width: 58px; height: 58px; flex: none; border-radius: 12px;
+  display: grid; place-items: center; color: var(--vermelho);
+  border: 3px solid var(--risco);
+}
+.apagar:active { background: var(--toque); }
+
+.relatorio { width: 100%; border-collapse: collapse; font-size: var(--t-apoio); }
+.relatorio th, .relatorio td { padding: 10px 4px; text-align: center; border-bottom: 2px solid var(--risco); }
+.relatorio th:first-child, .relatorio td:first-child { text-align: left; }
+.relatorio thead th { color: var(--cinza); font-weight: 400; }
+.marca-tab { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 999px; color: var(--branco); }
+.marca-tab.s { background: var(--verde); }
+.marca-tab.n { background: var(--vermelho); }
+.marca-tab.v { background: none; color: var(--cinza); }
+.rolagem { overflow-x: auto; }
+
+.cod-casa {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-nome); letter-spacing: .12em; color: var(--azul);
+  text-align: center; border: 3px solid var(--azul); border-radius: 14px;
+  padding: 16px; margin-bottom: 14px;
+}
+
+/* ============================================================
+   AVISO EM CIMA DA TELA
+   ============================================================ */
+.fundo-modal { position: fixed; inset: 0; z-index: 60; background: rgba(10,14,18,.7); display: grid; place-items: center; padding: 18px; }
+.modal {
+  width: 100%; max-width: 430px; background: var(--branco);
+  border-radius: 24px; padding: 26px; text-align: center;
+  animation: sobe .2s ease-out;
+}
+@keyframes sobe { from { transform: translateY(16px); opacity: 0 } to { transform: none; opacity: 1 } }
+.modal .cabeca { display: flex; align-items: center; gap: 16px; text-align: left; }
+.modal .cabeca .principal { font-size: var(--t-forte); line-height: 1.15; }
+.modal .cabeca .apoio { font-weight: 400; color: var(--cinza); }
+.modal .cabeca .hora-txt { font-size: var(--t-base); color: var(--cinza); font-variant-numeric: tabular-nums; }
+.modal .pergunta { font-family: "Playfair Display", Georgia, serif; font-size: var(--t-forte); margin: 24px 0 4px; }
+.modal .quem-ligar { font-family: "Playfair Display", Georgia, serif; font-size: var(--t-forte); }
+.modal .num-ligar { font-size: var(--t-nome); font-variant-numeric: tabular-nums; margin: 4px 0 22px; }
+
+/* ============================================================
+   DEMONSTRAÇÃO — os dois aparelhos (tela grande)
+   ============================================================ */
+.demo-topo { max-width: 1020px; margin: 0 auto; padding: 36px 20px 0; }
+.demo-topo h1 { font-family: "Playfair Display", Georgia, serif; font-size: var(--t-nome); margin: 0 0 10px; text-wrap: balance; }
+.demo-topo .linha-fina { color: var(--cinza); font-weight: 400; margin: 0 0 24px; max-width: 62ch; }
+
+.roteiro { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; border: 3px solid var(--preto); border-radius: 18px; padding: 20px; }
+.passo { display: grid; gap: 8px; align-content: start; }
+.passo .n { width: 36px; height: 36px; border-radius: 999px; background: var(--azul); color: var(--branco); display: grid; place-items: center; }
+.passo p { margin: 0; font-size: var(--t-apoio); font-weight: 400; }
+.passo p b { font-weight: 700; }
+
+.demo-barra { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; padding: 24px 18px 6px; }
+.demo-barra .botao { width: auto; min-height: 58px; font-size: var(--t-apoio); text-decoration: none; }
+
+.palco { display: flex; gap: 32px; justify-content: center; align-items: flex-start; flex-wrap: wrap; padding: 16px 18px 60px; }
+.fone { width: 344px; }
+.fone-rot { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: var(--t-apoio); margin-bottom: 14px; }
+.fone-rot .pino { width: 14px; height: 14px; border-radius: 999px; flex: none; }
+.fone-corpo { border: 14px solid #1D242C; border-radius: 44px; background: #1D242C; overflow: hidden; }
+.fone-tela {
+  --esc: .72; --topo-seguro: 0px; --baixo-seguro: 0px;
+  position: relative; height: 650px; overflow-y: auto; overflow-x: hidden;
+  background: var(--branco); border-radius: 30px;
+}
+.palco .fundo-modal { position: absolute; border-radius: 30px; }
+.palco .app { max-width: none; }
+
+@media (max-width: 780px) { .roteiro { grid-template-columns: 1fr 1fr; } .fone { width: 100%; max-width: 360px; } }
+@media (max-width: 470px) { .roteiro { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   AGENDA DE PAPEL
+   ============================================================ */
+.agenda { display: none; }
+@media print {
+  .abertura, .topo, .tela, .rodape, .fundo-modal, .demo-topo, .demo-barra, .fone-rot { display: none !important; }
+  .fone-corpo { border: 0; }
+  .agenda { display: block !important; color: #000; padding: 0 6mm; }
+  .agenda h1 { font-family: "Playfair Display", Georgia, serif; font-size: 26pt; margin: 0 0 2mm; }
+  .agenda .quem-papel { font-size: 12pt; margin: 0 0 4mm; }
+  .agenda h2 { font-size: 15pt; margin: 7mm 0 2mm; border-bottom: 2px solid #000; padding-bottom: 1mm; }
+  .agenda ul { font-size: 13pt; line-height: 2.05; padding-left: 0; list-style: none; margin: 0; }
+  .agenda li { border-bottom: 1px dotted #999; padding: 1mm 0; }
+  .agenda .quadro { display: inline-block; width: 5mm; height: 5mm; border: 1.5pt solid #000; margin-right: 3mm; vertical-align: -1mm; }
+  .agenda .rodape-papel { margin-top: 8mm; font-size: 10pt; border-top: 1px solid #000; padding-top: 2mm; }
+}
+
+</style>
+
+<div class="demo-topo">
+  <h1>Os dois aparelhos, lado a lado</h1>
+  <p class="linha-fina">É o mesmo app rodando duas vezes, na mesma casa. O que você faz de um lado aparece no outro na hora — é exatamente o que acontece entre dois celulares.</p>
+
+  <div class="roteiro">
+    <div class="passo"><span class="n">1</span><p><b>À esquerda</b>, cadastre um remédio novo.</p></div>
+    <div class="passo"><span class="n">2</span><p><b>À direita</b>, ele já apareceu em Meus Remédios.</p></div>
+    <div class="passo"><span class="n">3</span><p><b>À direita</b>, toque em <b>Tomei</b>.</p></div>
+    <div class="passo"><span class="n">4</span><p><b>À esquerda</b>, o relatório do dia mudou.</p></div>
+  </div>
+</div>
+
+<div class="demo-barra">
+  <button class="botao claro" data-acao="lembrete">Mostrar o lembrete do horário</button>
+  <button class="botao claro" data-acao="recomecar">Recomeçar a demonstração</button>
+  <a class="botao claro" href="index.html" style="text-decoration:none">Abrir o app de verdade</a>
+</div>
+
+<div class="palco">
+  <div class="fone">
+    <div class="fone-rot"><span class="pino" style="background: var(--consulta)"></span>Celular de quem cuida</div>
+    <div class="fone-corpo"><div class="fone-tela" data-el="fone-resp"></div></div>
+  </div>
+  <div class="fone">
+    <div class="fone-rot"><span class="pino" style="background: var(--remedio)"></span>Celular da pessoa cuidada</div>
+    <div class="fone-corpo"><div class="fone-tela" data-el="fone-idoso"></div></div>
+  </div>
+</div>
+
+<div class="agenda" id="agenda"></div>
+
+<script>
+/* ============================================================
+   O ÚNICO ARQUIVO QUE VOCÊ PRECISA EDITAR.
+
+   Enquanto estiver assim, o app funciona normalmente — só que
+   cada celular guarda os dados por conta própria, sem ligação
+   entre eles.
+
+   Para ligar os dois aparelhos, cole aqui os dados do seu
+   projeto Firebase. O passo a passo está no LEIA-ME.md.
+   ============================================================ */
+
+window.CONFIG_FIREBASE = {
+  apiKey: "",
+  databaseURL: "",
+  projectId: ""
+};
+
+
+/* ============================================================
+   AS FIGURAS
+   ------------------------------------------------------------
+   Desenhos coloridos, nao iconezinhos de risco fino. Quem tem
+   80 anos reconhece uma AMBULANCIA; nao reconhece um pictograma
+   abstrato de telefone.
+
+   Sao SVG escritos a mao — nao dependem de internet nem de
+   biblioteca nenhuma, e crescem sem borrar.
+
+   ONDE MEXER: as cores estao no comeco de cada figura.
+   ============================================================ */
+
+window.FIGURA = (function () {
+  "use strict";
+
+  function svg(conteudo, tamanho) {
+    var t = tamanho || 104;
+    return '<svg class="figura" width="' + t + '" height="' + t + '" viewBox="0 0 120 120" ' +
+      'aria-hidden="true" focusable="false">' + conteudo + "</svg>";
+  }
+
+  /* Metade de uma capsula. Desenha o lado arredondado e deixa o
+     outro reto, para as duas metades encaixarem. */
+  function meiaCapsula(x0, x1, cy, r, cor, ladoRedondo) {
+    if (ladoRedondo === "esq") {
+      return '<path d="M' + x1 + ' ' + (cy - r) + ' H' + (x0 + r) +
+        ' A' + r + ' ' + r + ' 0 0 0 ' + (x0 + r) + ' ' + (cy + r) +
+        ' H' + x1 + ' Z" fill="' + cor + '"/>';
+    }
+    return '<path d="M' + x0 + ' ' + (cy - r) + ' H' + (x1 - r) +
+      ' A' + r + ' ' + r + ' 0 0 1 ' + (x1 - r) + ' ' + (cy + r) +
+      ' H' + x0 + ' Z" fill="' + cor + '"/>';
+  }
+
+  function capsula(cx, cy, comprimento, espessura, corA, corB, giro) {
+    var r = espessura / 2;
+    var x0 = cx - comprimento / 2, x1 = cx + comprimento / 2, meio = cx;
+    return '<g transform="rotate(' + giro + ' ' + cx + ' ' + cy + ')">' +
+      meiaCapsula(x0, meio, cy, r, corA, "esq") +
+      meiaCapsula(meio, x1, cy, r, corB, "dir") +
+      // um brilho, para a pastilha nao ficar chapada
+      '<rect x="' + (x0 + r * 0.7) + '" y="' + (cy - r * 0.62) + '" width="' + (comprimento - r * 1.6) +
+      '" height="' + (r * 0.42) + '" rx="' + (r * 0.21) + '" fill="#FFFFFF" opacity=".34"/>' +
+      '<path d="M' + x0 + ' ' + (cy - r) + ' H' + (x1 - r) + ' A' + r + ' ' + r + ' 0 0 1 ' + (x1 - r) + ' ' + (cy + r) +
+      ' H' + (x0 + r) + ' A' + r + ' ' + r + ' 0 0 1 ' + (x0 + r) + ' ' + (cy - r) +
+      ' Z" fill="none" stroke="#14213D" stroke-width="3.2"/>' +
+      '<line x1="' + meio + '" y1="' + (cy - r) + '" x2="' + meio + '" y2="' + (cy + r) + '" stroke="#14213D" stroke-width="3.2"/>' +
+      "</g>";
+  }
+
+  return {
+    // ---------- REMÉDIOS: duas cápsulas cruzadas ----------
+    remedios: function (t) {
+      return svg(
+        capsula(58, 66, 76, 30, "#E02020", "#FFFFFF", -38) +
+        capsula(64, 52, 70, 27, "#1565D8", "#FFFFFF", 34),
+        t
+      );
+    },
+
+    // ---------- EXERCÍCIOS: pessoa caminhando ----------
+    exercicios: function (t) {
+      return svg(
+        // pernas
+        '<path d="M56 68 L44 96 L34 104" fill="none" stroke="#2E3A46" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M62 68 L76 92 L86 98" fill="none" stroke="#2E3A46" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>' +
+        // sapatos
+        '<path d="M30 104 h14" stroke="#14213D" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M84 99 h13" stroke="#14213D" stroke-width="9" stroke-linecap="round"/>' +
+        // tronco
+        '<path d="M59 38 L59 70" stroke="#1565D8" stroke-width="26" stroke-linecap="round"/>' +
+        // braços
+        '<path d="M56 46 L38 58 L34 70" fill="none" stroke="#1565D8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '<path d="M64 46 L84 40 L90 30" fill="none" stroke="#1565D8" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>' +
+        // mãos
+        '<circle cx="33" cy="72" r="5.5" fill="#F2C49B"/>' +
+        '<circle cx="91" cy="28" r="5.5" fill="#F2C49B"/>' +
+        // cabeça, com um topete grisalho discreto
+        '<circle cx="59" cy="26" r="14" fill="#F2C49B" stroke="#14213D" stroke-width="3"/>' +
+        '<path d="M46.4 19.8 a14 14 0 0 1 25.2 0 a30 30 0 0 0 -25.2 0 Z" fill="#DDE4EA"/>' +
+        '<path d="M46.4 19.8 a14 14 0 0 1 25.2 0" fill="none" stroke="#14213D" stroke-width="2.8" stroke-linecap="round"/>',
+        t
+      );
+    },
+
+    // ---------- CONSULTAS: estetoscópio ----------
+    consultas: function (t) {
+      return svg(
+        // olivas
+        '<path d="M30 22 v16 a30 30 0 0 0 34 29" fill="none" stroke="#1565D8" stroke-width="9" stroke-linecap="round"/>' +
+        '<path d="M62 22 v16 a30 30 0 0 1 -34 29" fill="none" stroke="#1565D8" stroke-width="9" stroke-linecap="round"/>' +
+        '<circle cx="30" cy="20" r="6" fill="#14213D"/>' +
+        '<circle cx="62" cy="20" r="6" fill="#14213D"/>' +
+        // tubo até o diafragma
+        '<path d="M46 66 v14 a22 22 0 0 0 44 0 v-8" fill="none" stroke="#1565D8" stroke-width="9" stroke-linecap="round"/>' +
+        // diafragma
+        '<circle cx="90" cy="60" r="17" fill="#CBD6E2" stroke="#14213D" stroke-width="3.4"/>' +
+        '<circle cx="90" cy="60" r="9" fill="#8FA3B8" stroke="#14213D" stroke-width="2.6"/>' +
+        // coraçãozinho: diz "consulta médica", não "objeto largado"
+        '<path d="M22 92 c0-8 12-10 15-3 3-7 15-5 15 3 0 9-15 17-15 17 S22 101 22 92 Z" ' +
+        'fill="#E02020" stroke="#14213D" stroke-width="3" stroke-linejoin="round"/>',
+        t
+      );
+    },
+
+    // ---------- AJUDA: ambulância ----------
+    ajuda: function (t) {
+      return svg(
+        // sirene
+        '<rect x="52" y="30" width="18" height="9" rx="4" fill="#E02020" stroke="#14213D" stroke-width="2.6"/>' +
+        // carroceria
+        '<path d="M14 44 h56 l22 16 h14 a4 4 0 0 1 4 4 v20 a4 4 0 0 1 -4 4 H14 a4 4 0 0 1 -4 -4 V48 a4 4 0 0 1 4 -4 Z" ' +
+        'fill="#FFFFFF" stroke="#14213D" stroke-width="3.4" stroke-linejoin="round"/>' +
+        // janela da cabine
+        '<path d="M74 48 h12 l14 12 h-26 Z" fill="#8FC4F0" stroke="#14213D" stroke-width="3" stroke-linejoin="round"/>' +
+        // faixa
+        '<rect x="10" y="72" width="100" height="9" fill="#E02020"/>' +
+        // cruz
+        '<path d="M32 52 h12 v9 h9 v12 h-9 v9 h-12 v-9 h-9 v-12 h9 Z" fill="#E02020" stroke="#14213D" stroke-width="2.6" stroke-linejoin="round"/>' +
+        // rodas
+        '<circle cx="34" cy="90" r="13" fill="#2E3A46" stroke="#14213D" stroke-width="3"/>' +
+        '<circle cx="34" cy="90" r="5.5" fill="#CBD6E2"/>' +
+        '<circle cx="88" cy="90" r="13" fill="#2E3A46" stroke="#14213D" stroke-width="3"/>' +
+        '<circle cx="88" cy="90" r="5.5" fill="#CBD6E2"/>',
+        t
+      );
+    },
+
+    // ---------- QUEM CUIDA: mãos segurando um coração ----------
+    cuidador: function (t) {
+      return svg(
+        '<path d="M60 34 c6-14 30-12 30 6 0 16-30 34-30 34 S30 56 30 40 c0-18 24-20 30-6 Z" ' +
+        'fill="#E02020" stroke="#14213D" stroke-width="4" stroke-linejoin="round"/>' +
+        // mão esquerda
+        '<path d="M14 96 V74 a6 6 0 0 1 12 0 v10 l6 -4 a5 5 0 0 1 6 8 l-8 8 v10 Z" ' +
+        'fill="#F2C49B" stroke="#14213D" stroke-width="3.6" stroke-linejoin="round"/>' +
+        // mão direita
+        '<path d="M106 96 V74 a6 6 0 0 0 -12 0 v10 l-6 -4 a5 5 0 0 0 -6 8 l8 8 v10 Z" ' +
+        'fill="#F2C49B" stroke="#14213D" stroke-width="3.6" stroke-linejoin="round"/>',
+        t
+      );
+    },
+
+    // ---------- PESSOA CUIDADA: senhora de óculos ----------
+    pessoa: function (t) {
+      return svg(
+        // ombros
+        '<path d="M22 106 a38 38 0 0 1 76 0 Z" fill="#1565D8" stroke="#14213D" stroke-width="4" stroke-linejoin="round"/>' +
+        // rosto
+        '<circle cx="60" cy="46" r="28" fill="#F2C49B" stroke="#14213D" stroke-width="4"/>' +
+        // cabelo grisalho
+        '<path d="M32 42 a28 28 0 0 1 56 0 a44 44 0 0 0 -56 0 Z" fill="#DDE4EA" stroke="#14213D" stroke-width="3.6" stroke-linejoin="round"/>' +
+        // óculos
+        '<circle cx="49" cy="50" r="9" fill="#FFFFFF" stroke="#14213D" stroke-width="3.6"/>' +
+        '<circle cx="71" cy="50" r="9" fill="#FFFFFF" stroke="#14213D" stroke-width="3.6"/>' +
+        '<path d="M58 50 h4" stroke="#14213D" stroke-width="3.6"/>' +
+        // sorriso
+        '<path d="M52 63 a10 8 0 0 0 16 0" fill="none" stroke="#14213D" stroke-width="3.4" stroke-linecap="round"/>',
+        t
+      );
+    },
+
+    // ---------- telefone, para os botões de ligar ----------
+    telefone: function (t) {
+      return svg(
+        '<path d="M32 20 h20 l10 26 -13 9 a52 52 0 0 0 26 26 l9 -13 26 10 v20 a10 10 0 0 1 -11 10 A78 78 0 0 1 22 31 a10 10 0 0 1 10 -11 Z" ' +
+        'fill="#17A34A" stroke="#14213D" stroke-width="3.4" stroke-linejoin="round"/>',
+        t
+      );
+    },
+
+    /* O mostrador de relógio: veio dos desenhos do projeto.
+       Quem não lê o número reconhece a posição do ponteiro. */
+    relogio: function (hhmm, tamanho, cor) {
+      var p = String(hhmm).split(":"), h = +p[0] || 0, m = +p[1] || 0;
+      var ah = (((h % 12) + m / 60) * 30 - 90) * Math.PI / 180;
+      var am = (m * 6 - 90) * Math.PI / 180;
+      var s = tamanho || 78, c = s / 2, r = c - 5, marcas = "";
+      for (var i = 0; i < 12; i++) {
+        var a = (i * 30 - 90) * Math.PI / 180, grande = i % 3 === 0;
+        marcas += '<line x1="' + (c + Math.cos(a) * (r - 4)).toFixed(1) + '" y1="' + (c + Math.sin(a) * (r - 4)).toFixed(1) +
+          '" x2="' + (c + Math.cos(a) * (r - (grande ? 10 : 7.5))).toFixed(1) + '" y2="' + (c + Math.sin(a) * (r - (grande ? 10 : 7.5))).toFixed(1) +
+          '" stroke="#14213D" stroke-width="' + (grande ? 3 : 1.6) + '" stroke-linecap="round" opacity="' + (grande ? 1 : .5) + '"/>';
+      }
+      return '<svg class="relogio" width="' + s + '" height="' + s + '" viewBox="0 0 ' + s + ' ' + s + '" role="img" aria-label="' + hhmm + '">' +
+        '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="#FFFFFF" stroke="' + (cor || "#1565D8") + '" stroke-width="5"/>' + marcas +
+        '<line x1="' + c + '" y1="' + c + '" x2="' + (c + Math.cos(ah) * r * .48).toFixed(1) + '" y2="' + (c + Math.sin(ah) * r * .48).toFixed(1) + '" stroke="#14213D" stroke-width="5" stroke-linecap="round"/>' +
+        '<line x1="' + c + '" y1="' + c + '" x2="' + (c + Math.cos(am) * r * .74).toFixed(1) + '" y2="' + (c + Math.sin(am) * r * .74).toFixed(1) + '" stroke="#14213D" stroke-width="3.6" stroke-linecap="round"/>' +
+        '<circle cx="' + c + '" cy="' + c + '" r="3.6" fill="' + (cor || "#1565D8") + '"/></svg>';
+    }
+  };
+})();
+
+
+/* ============================================================
+   A CASA — onde os dados moram
+   ------------------------------------------------------------
+   Uma "casa" e um par de aparelhos ligados por um codigo de 6
+   caracteres. Dentro dela existem duas partes separadas:
+
+     cadastro → remedios, exercicios, consultas, telefones, nome
+                Escrito por QUEM CUIDA.
+     registro → o que foi feito em cada dia.
+                Escrito por QUEM E CUIDADO.
+
+   Sao separadas de proposito. Se fossem uma coisa so, o "Tomei"
+   marcado as 18:30 apagaria o remedio que a filha cadastrou as
+   18:29 — quem grava por ultimo vence.
+
+   Tudo tambem fica gravado no proprio aparelho, entao o app
+   funciona sem internet e sobe o que mudou quando a rede volta.
+
+   TROCAR DE SERVIDOR: e so aqui. As telas nao sabem de onde o
+   dado vem — elas so chamam Casa.mudou() e escutam Casa.assinar().
+   ============================================================ */
+
+window.Casa = (function () {
+  "use strict";
+
+  var SEMENTE = {
+    perfil: { trato: "Sr.", nome: "José" },
+    remedios: [
+      { id: "r1", hora: "07:00", nome: "Losartana", motivo: "Pressão" },
+      { id: "r2", hora: "07:00", nome: "Metformina", motivo: "Diabetes" },
+      { id: "r3", hora: "07:00", nome: "Cálcio", motivo: "Osteoporose" },
+      { id: "r4", hora: "12:30", nome: "Metformina", motivo: "Diabetes" },
+      { id: "r5", hora: "18:30", nome: "Metformina", motivo: "Diabetes" },
+      { id: "r6", hora: "21:00", nome: "Anlodipino", motivo: "Pressão" }
+    ],
+    exercicios: [
+      { id: "e1", nome: "Caminhada", detalhe: "30 minutos" },
+      { id: "e2", nome: "Sentar e levantar", detalhe: "8 vezes" },
+      { id: "e3", nome: "Elevação lateral das pernas", detalhe: "segurando em apoio — 12 vezes" }
+    ],
+    consultas: [
+      { id: "c1", data: "2026-11-10", hora: "15:00", medico: "Dra. Carol", especialidade: "Cardiologista" },
+      { id: "c2", data: "2026-11-25", hora: "08:00", medico: "Dr. Carlos", especialidade: "Geriatra" }
+    ],
+    contatos: [
+      { id: "k1", nome: "Maria (filha)", telefone: "11988887777" },
+      { id: "k2", nome: "Dra. Carol", telefone: "1133334444" }
+    ]
+  };
+
+  function clonar(o) { return JSON.parse(JSON.stringify(o)); }
+  function guardar(c, v) { try { localStorage.setItem(c, JSON.stringify(v)); } catch (e) {} }
+  function buscar(c) { try { var v = localStorage.getItem(c); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+
+  // O Firebase apaga lista vazia e devolve nada no lugar. Isto recompoe a forma.
+  function arrumarCadastro(c) {
+    c = c || {};
+    return {
+      perfil: c.perfil || { trato: "", nome: "" },
+      remedios: c.remedios || [],
+      exercicios: c.exercicios || [],
+      consultas: c.consultas || [],
+      contatos: c.contatos || []
+    };
+  }
+  function arrumarRegistro(r) {
+    r = r || {};
+    return { dias: r.dias || {}, consultas: r.consultas || {} };
+  }
+
+  var Casa = {
+    codigo: null,
+    papel: "idoso",
+    cadastro: arrumarCadastro(clonar(SEMENTE)),
+    registro: { dias: {}, consultas: {} },
+    estado: "sozinha",          // sozinha | procurando | ligada
+    ouvintes: [],
+
+    _bd: null,
+    _refs: [],
+    _pendentes: {},
+
+    SEMENTE: SEMENTE,
+
+    // ---------- quem quer saber quando algo muda ----------
+    assinar: function (fn) { this.ouvintes.push(fn); },
+    esquecerTodos: function () { this.ouvintes = []; },
+    avisar: function () { this.ouvintes.forEach(function (f) { try { f(); } catch (e) {} }); },
+
+    // ---------- liga o Firebase, se houver ----------
+    ligarServidor: function () {
+      var cfg = window.CONFIG_FIREBASE || {};
+      if (!cfg.databaseURL || !window.firebase) { this.estado = "sozinha"; return false; }
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(cfg);
+        this._bd = firebase.database();
+        this.estado = "procurando";
+        var eu = this;
+        // O proprio Firebase avisa quando a conexao cai e volta.
+        this._bd.ref(".info/connected").on("value", function (s) {
+          eu.estado = s.val() ? "ligada" : "procurando";
+          eu.avisar();
+        });
+        return true;
+      } catch (e) {
+        this._bd = null; this.estado = "sozinha"; return false;
+      }
+    },
+
+    temServidor: function () { return !!this._bd; },
+
+    // ---------- abre uma casa ----------
+    abrir: function (codigo, papel) {
+      var eu = this;
+      eu.fechar();
+      eu.codigo = codigo;
+      if (papel) eu.papel = papel;
+
+      // 1. o que ja estava neste aparelho aparece na hora
+      var local = buscar("viva:casa:" + codigo);
+      eu.cadastro = arrumarCadastro(local && local.cadastro ? local.cadastro : clonar(SEMENTE));
+      eu.registro = arrumarRegistro(local && local.registro);
+      eu.avisar();
+
+      if (!eu._bd) return;
+
+      // 2. e o servidor manda o que houver de mais novo
+      eu._escutar("cadastro", arrumarCadastro);
+      eu._escutar("registro", arrumarRegistro);
+    },
+
+    fechar: function () {
+      this._refs.forEach(function (r) { try { r.off(); } catch (e) {} });
+      this._refs = [];
+    },
+
+    _caminho: function (parte) { return "casas/" + this.codigo + "/" + parte; },
+
+    _escutar: function (parte, arrumar) {
+      var eu = this;
+      var ref = eu._bd.ref(eu._caminho(parte));
+      ref.on("value", function (snap) {
+        // Casa nova: quem cuida e o dono do cadastro, entao e ele quem o cria.
+        if (!snap.exists()) {
+          if (parte === "cadastro" && eu.papel === "responsavel") eu._publicar("cadastro");
+          return;
+        }
+        if (eu._pendentes[parte]) return;   // temos mudanca local por enviar: ela vale mais
+        eu[parte] = arrumar(snap.val());
+        eu._gravarLocal();
+        eu.avisar();
+      }, function () {
+        eu.estado = "sozinha"; eu.avisar();
+      });
+      eu._refs.push(ref);
+    },
+
+    // ---------- mexeu em Casa.cadastro / Casa.registro? chame isto ----------
+    mudou: function (parte) {
+      this._gravarLocal();
+      this.avisar();
+      this._publicar(parte);
+    },
+
+    _gravarLocal: function () {
+      if (this.codigo) guardar("viva:casa:" + this.codigo, { cadastro: this.cadastro, registro: this.registro });
+    },
+
+    // Junta as gravacoes de 400ms num envio so — evita mandar a cada toque.
+    _publicar: function (parte) {
+      var eu = this;
+      if (!eu._bd || !eu.codigo) return;
+      clearTimeout(eu._pendentes[parte]);
+      eu._pendentes[parte] = setTimeout(function () {
+        eu._pendentes[parte] = null;
+        eu._bd.ref(eu._caminho(parte)).set(clonar(eu[parte])).catch(function () {
+          eu.estado = "sozinha"; eu.avisar();
+        });
+      }, 400);
+    },
+
+    // ---------- perguntas que as telas fazem ----------
+    resposta: function (id, dia) {
+      var r = this.registro.dias[dia || this.hoje()];
+      return (r && r[id]) || null;
+    },
+    responder: function (id, valor) {
+      var dia = this.hoje();
+      if (!this.registro.dias[dia]) this.registro.dias[dia] = {};
+      if (this.registro.dias[dia][id] === valor) delete this.registro.dias[dia][id];
+      else this.registro.dias[dia][id] = valor;
+      this.mudou("registro");
+    },
+    respostaConsulta: function (id) { return this.registro.consultas[id] || null; },
+    responderConsulta: function (id, valor) {
+      if (this.registro.consultas[id] === valor) delete this.registro.consultas[id];
+      else this.registro.consultas[id] = valor;
+      this.mudou("registro");
+    },
+
+    hoje: function () {
+      var d = new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
+      return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+    },
+
+    recomecar: function () {
+      this.cadastro = arrumarCadastro(clonar(SEMENTE));
+      this.registro = { dias: {}, consultas: {} };
+      this.mudou("cadastro");
+      this.mudou("registro");
+    }
+  };
+
+  return Casa;
+})();
+
+
+/* ============================================================
+   AS TELAS
+   ------------------------------------------------------------
+   criarApp(caixa, papel) monta um app inteiro dentro de um
+   elemento. O app mobile chama isso uma vez; a pagina de
+   demonstracao chama duas, e por isso as duas ficam sempre
+   iguais — nao existe uma segunda versao das telas.
+
+   papel: "idoso"       → ve o dia e confirma
+          "responsavel" → cadastra e acompanha
+
+   ONDE MEXER:
+     · o desenho de cada tela .... HTML_TELAS, logo abaixo
+     · as figuras coloridas ...... js/figuras.js
+     · as cores e tamanhos ....... css/estilo.css
+   ============================================================ */
+
+(function () {
+  "use strict";
+
+  var DIAS = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
+  var MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function porExtenso(d) { return DIAS[d.getDay()] + ", " + d.getDate() + " de " + MESES[d.getMonth()]; }
+  function dataCurta(iso) { var p = String(iso).split("-"); return p.length === 3 ? p[2] + "/" + p[1] : iso; }
+  function minutos(hhmm) { var p = String(hhmm).split(":"); return (+p[0]) * 60 + (+p[1] || 0); }
+  function agoraMin() { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
+  function novoId() { return "x" + Date.now().toString(36) + Math.floor(Math.random() * 999).toString(36); }
+  function chaveDia(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+
+  function esc(t) {
+    return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+  function telefoneBonito(t) {
+    var n = String(t).replace(/\D/g, "");
+    if (n.length === 11) return "(" + n.slice(0, 2) + ") " + n.slice(2, 7) + "-" + n.slice(7);
+    if (n.length === 10) return "(" + n.slice(0, 2) + ") " + n.slice(2, 6) + "-" + n.slice(6);
+    return t;
+  }
+  function saudacaoDaHora() {
+    var h = new Date().getHours();
+    return h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+  }
+
+  var CERTO = '<svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5"/></svg>';
+  var ERRADO = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6 18 18M18 6 6 18"/></svg>';
+
+  var TITULOS = {
+    inicio: "Viva com Cuidado", remedios: "Meus Remédios", exercicios: "Meus Exercícios",
+    consultas: "Minhas Consultas", ajuda: "Ajuda", responsavel: "Quem cuida"
+  };
+  // a figura que acompanha o título, e a cor do relógio de cada assunto
+  var FIG_TELA = { remedios: "remedios", exercicios: "exercicios", consultas: "consultas", ajuda: "ajuda" };
+  var COR_TELA = { remedios: "#1565D8", consultas: "#7B2FBE", exercicios: "#ED7014" };
+
+  // ============================================================
+  // O DESENHO DAS TELAS
+  // ============================================================
+  var HTML_TELAS =
+    '<div class="app">' +
+
+    '<header class="topo">' +
+      '<button class="btn-voltar" data-el="voltar" hidden>' +
+        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 19 8 12l7-7"/></svg>Voltar' +
+      '</button>' +
+      '<span data-el="figura-topo"></span>' +
+      '<h1 data-el="titulo">Viva com Cuidado</h1>' +
+      '<div class="fonte-ctl" data-el="fonte-ctl" role="group" aria-label="Tamanho da letra">' +
+        '<button data-fonte="1" aria-pressed="true" title="Letra normal">A</button>' +
+        '<button data-fonte="1.18" aria-pressed="false" title="Letra maior">A</button>' +
+        '<button data-fonte="1.38" aria-pressed="false" title="Letra bem maior">A</button>' +
+      '</div>' +
+    '</header>' +
+    '<div class="faixa-espiando" data-el="faixa-espiando" hidden>Você está vendo a tela da pessoa cuidada</div>' +
+
+    // ---------- inicio ----------
+    '<section class="tela" data-tela="inicio">' +
+      '<div class="saudacao">' +
+        '<div class="oi" data-el="saudacao">Bem-vindo</div>' +
+        '<div class="nome" data-el="nome-pessoa"></div>' +
+        '<div class="data" data-el="data-hoje"></div>' +
+      '</div>' +
+      '<div class="agora" data-el="cartao-agora"></div>' +
+      '<nav class="menu">' +
+        '<button class="menu-item" data-ir="remedios"><span class="selo" data-el="selo-remedios"></span>' +
+          '<span data-el="fig-remedios"></span><span class="rotulo">Meus Remédios</span></button>' +
+        '<button class="menu-item" data-ir="exercicios"><span class="selo" data-el="selo-exercicios"></span>' +
+          '<span data-el="fig-exercicios"></span><span class="rotulo">Meus Exercícios</span></button>' +
+        '<button class="menu-item" data-ir="consultas"><span class="selo" data-el="selo-consultas"></span>' +
+          '<span data-el="fig-consultas"></span><span class="rotulo">Minhas Consultas</span></button>' +
+        '<button class="menu-item ajuda" data-ir="ajuda">' +
+          '<span data-el="fig-ajuda"></span><span class="rotulo">AJUDA</span></button>' +
+      '</nav>' +
+      '<div class="rodape">' +
+        '<div class="status-linha"><span class="bolinha" data-el="bolinha-app"></span><span data-el="status-app"></span></div>' +
+        '<button class="voltar-txt" data-acao="pedir-avisos" data-el="btn-avisos" hidden>Ativar os avisos de horário</button>' +
+        '<button class="voltar-txt" data-acao="desparear" data-el="btn-trocar" hidden>Este aparelho não é o certo</button>' +
+      '</div>' +
+    '</section>' +
+
+    '<section class="tela" data-tela="remedios" hidden><div class="lista" data-el="lista-remedios"></div></section>' +
+    '<section class="tela" data-tela="exercicios" hidden><div class="lista" data-el="lista-exercicios"></div></section>' +
+    '<section class="tela" data-tela="consultas" hidden><div class="lista" data-el="lista-consultas"></div></section>' +
+
+    '<section class="tela" data-tela="ajuda" hidden>' +
+      '<button class="sos" data-el="btn-192"><span class="num">192</span><span class="leg">Chamar a ambulância</span></button>' +
+      '<p class="aviso-sos">O aparelho vai pedir a sua confirmação antes de ligar.</p>' +
+      '<div class="lista" data-el="lista-contatos"></div>' +
+    '</section>' +
+
+    // ---------- quem cuida ----------
+    '<section class="tela" data-tela="responsavel" hidden>' +
+      '<div class="bloco">' +
+        '<h3>Como foi o dia</h3>' +
+        '<p class="nota">Os últimos 7 dias. ✓ feito · ✕ não feito · – sem resposta.</p>' +
+        '<div class="rolagem"><table class="relatorio" data-el="tabela-relatorio"></table></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>Remédios</h3><div data-el="edit-remedios"></div>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Horário<input type="time" data-el="nr-hora" value="08:00"></label>' +
+          '<label class="campo">Remédio<input data-el="nr-nome" placeholder="Losartana"></label></div>' +
+        '<div class="campos"><label class="campo">Para quê<input data-el="nr-motivo" placeholder="Pressão"></label>' +
+          '<button class="botao" data-acao="add-remedio">Adicionar remédio</button></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>Exercícios</h3><div data-el="edit-exercicios"></div>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Exercício<input data-el="ne-nome" placeholder="Caminhada"></label>' +
+          '<label class="campo">Quanto<input data-el="ne-detalhe" placeholder="30 minutos"></label></div>' +
+        '<div class="campos"><button class="botao laranja" data-acao="add-exercicio">Adicionar exercício</button></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>Consultas</h3><div data-el="edit-consultas"></div>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Data<input type="date" data-el="nc-data"></label>' +
+          '<label class="campo">Hora<input type="time" data-el="nc-hora" value="09:00"></label></div>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Médico<input data-el="nc-medico" placeholder="Dra. Carol"></label>' +
+          '<label class="campo">Especialidade<input data-el="nc-esp" placeholder="Cardiologista"></label></div>' +
+        '<div class="campos"><button class="botao roxo" data-acao="add-consulta">Adicionar consulta</button></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>Telefones de emergência</h3><div data-el="edit-contatos"></div>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Quem é<input data-el="nk-nome" placeholder="Maria (filha)"></label>' +
+          '<label class="campo">Telefone<input data-el="nk-tel" inputmode="tel" placeholder="11 98888-7777"></label></div>' +
+        '<div class="campos"><button class="botao vermelho" data-acao="add-contato">Adicionar telefone</button></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>A pessoa cuidada</h3>' +
+        '<div class="campos duo">' +
+          '<label class="campo">Tratamento<select data-el="cfg-trato"><option>Sr.</option><option>Sra.</option><option value="">Sem tratamento</option></select></label>' +
+          '<label class="campo">Nome<input data-el="cfg-nome" placeholder="José"></label></div>' +
+      '</div>' +
+
+      '<div class="bloco">' +
+        '<h3>Esta casa</h3>' +
+        '<div class="cod-casa" data-el="cod-casa"></div>' +
+        '<p class="nota" data-el="nota-casa"></p>' +
+        '<div class="campos">' +
+          '<button class="botao claro" data-acao="espiar">Ver a tela dela</button>' +
+          '<button class="botao claro" data-acao="imprimir">Imprimir agenda de papel</button>' +
+          '<button class="botao claro" data-acao="desparear">Desligar este aparelho da casa</button></div>' +
+      '</div>' +
+    '</section>' +
+
+    // ---------- avisos ----------
+    '<div class="fundo-modal" data-el="fundo-lembrete" hidden role="dialog" aria-modal="true">' +
+      '<div class="modal" data-el="caixa-lembrete"></div></div>' +
+
+    '<div class="fundo-modal" data-el="fundo-ligacao" hidden role="dialog" aria-modal="true">' +
+      '<div class="modal">' +
+        '<p class="pergunta" style="margin-top:0">Ligar para</p>' +
+        '<div class="quem-ligar" data-el="ligacao-quem"></div>' +
+        '<div class="num-ligar" data-el="ligacao-num"></div>' +
+        '<div class="par">' +
+          '<button class="resposta nao" data-acao="ligacao-nao"><span class="marca">' + ERRADO + '</span><span class="rot">Não</span></button>' +
+          '<button class="resposta sim" data-acao="ligacao-sim"><span class="marca">' + CERTO + '</span><span class="rot">Ligar</span></button></div>' +
+      '</div></div>' +
+
+    '</div>';
+
+  // ============================================================
+  // MONTA UM APP
+  // ============================================================
+  function criarApp(caixa, papel, escalaBase) {
+    caixa.innerHTML = HTML_TELAS;
+
+    var raiz = caixa.querySelector(".app");
+    var base = escalaBase || 1;
+    var fator = 1;
+    var telaBase = papel === "responsavel" ? "responsavel" : "inicio";
+    var tela = telaBase;
+    var dispensados = {};
+    var relogioLembrete = null;
+    var naDemo = caixa.classList.contains("fone-tela");
+
+    function $(n) { return raiz.querySelector('[data-el="' + n + '"]'); }
+    function todas(s) { return [].slice.call(raiz.querySelectorAll(s)); }
+    function val(n) { return ($(n).value || "").trim(); }
+    function limpar(ns) { ns.forEach(function (n) { $(n).value = ""; }); }
+    function aplicarEscala() { raiz.style.setProperty("--esc", base * fator); }
+    function subirTopo() { (naDemo ? caixa : window).scrollTo(0, 0); }
+    aplicarEscala();
+
+    // as figuras do menu entram uma vez só
+    $("fig-remedios").innerHTML = FIGURA.remedios(104);
+    $("fig-exercicios").innerHTML = FIGURA.exercicios(104);
+    $("fig-consultas").innerHTML = FIGURA.consultas(104);
+    $("fig-ajuda").innerHTML = FIGURA.ajuda(104);
+
+    // ---------- navegacao ----------
+    function ir(destino) {
+      tela = destino;
+      todas("[data-tela]").forEach(function (s) { s.hidden = s.dataset.tela !== destino; });
+      $("titulo").textContent = TITULOS[destino];
+      $("voltar").hidden = (destino === telaBase);
+      $("faixa-espiando").hidden = !(papel === "responsavel" && destino !== "responsavel");
+      // No topo não cabe tudo em 390px: a figura acompanha o título das
+      // subtelas; o tamanho da letra fica só na tela inicial, onde se ajusta.
+      $("figura-topo").innerHTML = FIG_TELA[destino] ? FIGURA[FIG_TELA[destino]](50) : "";
+      $("fonte-ctl").hidden = (destino !== "inicio");
+      subirTopo();
+      desenhar();
+    }
+
+    // ---------- pedacos ----------
+    function parBotoes(id, sim, nao) {
+      var r = Casa.resposta(id);
+      return '<div class="par">' +
+        '<button class="resposta sim" data-resp="sim" data-id="' + id + '" aria-pressed="' + (r === "sim") + '">' +
+          '<span class="marca">' + CERTO + '</span><span class="rot">' + sim + "</span></button>" +
+        '<button class="resposta nao" data-resp="nao" data-id="' + id + '" aria-pressed="' + (r === "nao") + '">' +
+          '<span class="marca">' + ERRADO + '</span><span class="rot">' + nao + "</span></button></div>";
+    }
+    function classeItem(r) { return r === "sim" ? " feito" : r === "nao" ? " pulado" : ""; }
+    function vazio(m) { return '<p class="vazio-msg">' + esc(m) + "</p>"; }
+
+    // ---------- desenho ----------
+    function desenhar() {
+      if (tela === "inicio") inicio();
+      else if (tela === "remedios") listaRemedios();
+      else if (tela === "exercicios") listaExercicios();
+      else if (tela === "consultas") listaConsultas();
+      else if (tela === "ajuda") listaContatos();
+      else if (tela === "responsavel") painelResponsavel();
+    }
+
+    function inicio() {
+      var p = Casa.cadastro.perfil || {};
+      $("saudacao").textContent = saudacaoDaHora();
+      $("nome-pessoa").textContent = ((p.trato || "") + " " + (p.nome || "")).trim() || "Bem-vindo";
+      $("data-hoje").textContent = porExtenso(new Date());
+
+      selo("selo-remedios", Casa.cadastro.remedios);
+      selo("selo-exercicios", Casa.cadastro.exercicios);
+      var faltaConsulta = Casa.cadastro.consultas.filter(function (c) { return !Casa.respostaConsulta(c.id); }).length;
+      $("selo-consultas").textContent = faltaConsulta || "✓";
+      $("selo-consultas").className = "selo" + (faltaConsulta ? "" : " pronto");
+      $("selo-consultas").hidden = false;
+
+      var agora = agoraMin();
+      var pendentes = Casa.cadastro.remedios.filter(function (r) { return !Casa.resposta(r.id); })
+        .sort(function (a, b) { return minutos(a.hora) - minutos(b.hora); });
+      var prox = pendentes.filter(function (r) { return minutos(r.hora) >= agora - 60; })[0] || pendentes[0];
+
+      var cx = $("cartao-agora");
+      if (prox) {
+        var chegou = minutos(prox.hora) <= agora;
+        cx.className = "agora" + (chegou ? " chegou" : "");
+        cx.innerHTML = FIGURA.relogio(prox.hora, 72, chegou ? "#E02020" : "#1565D8") +
+          '<div class="txt"><div class="rot">' + (chegou ? "Está na hora de" : "O próximo remédio é") + "</div>" +
+          '<div class="val">' + esc(prox.hora) + " · " + esc(prox.nome) + "</div></div>";
+      } else {
+        cx.className = "agora pronto";
+        cx.innerHTML = FIGURA.relogio(new Date().getHours() + ":" + pad(new Date().getMinutes()), 72, "#17A34A") +
+          '<div class="txt"><div class="rot">Tudo em dia</div>' +
+          '<div class="val">Nada pendente para hoje</div></div>';
+      }
+
+      pintarStatus();
+      $("btn-avisos").hidden = !(papel === "idoso" && "Notification" in window && Notification.permission === "default");
+    }
+
+    function selo(nome, lista) {
+      var faltam = lista.filter(function (x) { return !Casa.resposta(x.id); }).length;
+      $(nome).textContent = faltam || "✓";
+      $(nome).className = "selo" + (faltam ? "" : " pronto");
+    }
+
+    function pintarStatus() {
+      var b = $("bolinha-app"), t = $("status-app");
+      if (!b) return;
+      var outro = papel === "idoso" ? "de quem cuida" : "da pessoa cuidada";
+      if (!Casa.temServidor()) { b.className = "bolinha off"; t.textContent = "Funcionando só neste aparelho"; }
+      else if (Casa.estado === "ligada") { b.className = "bolinha ok"; t.textContent = "Ligado ao celular " + outro; }
+      else { b.className = "bolinha"; t.textContent = "Procurando conexão…"; }
+    }
+
+    function listaRemedios() {
+      var lista = Casa.cadastro.remedios.slice().sort(function (a, b) { return minutos(a.hora) - minutos(b.hora); });
+      $("lista-remedios").innerHTML = lista.length ? lista.map(function (r) {
+        return '<article class="item' + classeItem(Casa.resposta(r.id)) + '">' +
+          '<div class="item-topo">' + FIGURA.relogio(r.hora, 82, COR_TELA.remedios) +
+          '<div class="item-txt"><div class="hora-txt">' + esc(r.hora) + "</div>" +
+          '<div class="principal">' + esc(r.nome) + "</div>" +
+          '<div class="apoio">' + esc(r.motivo) + "</div></div></div>" +
+          parBotoes(r.id, "Tomei", "Não tomei") + "</article>";
+      }).join("") : vazio("Nenhum remédio cadastrado ainda.");
+    }
+
+    function listaExercicios() {
+      // Aqui o número vale mais que a figura: repetir o mesmo desenho em
+      // toda linha é ruído, e o que a pessoa precisa saber é a ordem.
+      $("lista-exercicios").innerHTML = Casa.cadastro.exercicios.length ? Casa.cadastro.exercicios.map(function (e, i) {
+        return '<article class="item' + classeItem(Casa.resposta(e.id)) + '">' +
+          '<div class="item-topo"><span class="ordem">' + (i + 1) + "</span>" +
+          '<div class="item-txt"><div class="principal">' + esc(e.nome) + "</div>" +
+          '<div class="apoio">' + esc(e.detalhe) + "</div></div></div>" +
+          parBotoes(e.id, "Fiz", "Não fiz") + "</article>";
+      }).join("") : vazio("Nenhum exercício cadastrado ainda.");
+    }
+
+    function listaConsultas() {
+      var lista = Casa.cadastro.consultas.slice().sort(function (a, b) { return (a.data + a.hora).localeCompare(b.data + b.hora); });
+      $("lista-consultas").innerHTML = lista.length ? lista.map(function (c) {
+        var r = Casa.respostaConsulta(c.id);
+        return '<article class="item' + classeItem(r) + '">' +
+          '<div class="item-topo">' + FIGURA.relogio(c.hora, 82, COR_TELA.consultas) +
+          '<div class="item-txt"><div class="hora-txt">' + dataCurta(c.data) + " · " + esc(c.hora) + "</div>" +
+          '<div class="principal">' + esc(c.medico) + "</div>" +
+          '<div class="apoio">' + esc(c.especialidade) + "</div></div></div>" +
+          '<div class="par">' +
+          '<button class="resposta sim" data-consulta="sim" data-id="' + c.id + '" aria-pressed="' + (r === "sim") + '">' +
+            '<span class="marca">' + CERTO + '</span><span class="rot">Fui</span></button>' +
+          '<button class="resposta nao" data-consulta="nao" data-id="' + c.id + '" aria-pressed="' + (r === "nao") + '">' +
+            '<span class="marca">' + ERRADO + '</span><span class="rot">Não fui</span></button>' +
+          "</div></article>";
+      }).join("") : vazio("Nenhuma consulta marcada.");
+    }
+
+    function listaContatos() {
+      $("lista-contatos").innerHTML = Casa.cadastro.contatos.length ? Casa.cadastro.contatos.map(function (k) {
+        return '<div class="contato"><div class="quem"><b>' + esc(k.nome) + "</b><span>" + esc(telefoneBonito(k.telefone)) + "</span></div>" +
+          '<button class="ligar" data-ligar="' + esc(k.telefone) + '" data-nome="' + esc(k.nome) + '">' +
+          '<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 3.5h3.6l1.9 4.8-2.4 1.7a13 13 0 0 0 6.3 6.3l1.7-2.4 4.8 1.9v3.6a2 2 0 0 1-2.2 2A18 18 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2Z"/></svg>Ligar</button></div>';
+      }).join("") : vazio("Nenhum telefone cadastrado.");
+    }
+
+    function painelResponsavel() {
+      var p = Casa.cadastro.perfil || {};
+      if (document.activeElement !== $("cfg-trato")) $("cfg-trato").value = p.trato || "";
+      if (document.activeElement !== $("cfg-nome")) $("cfg-nome").value = p.nome || "";
+
+      $("edit-remedios").innerHTML = Casa.cadastro.remedios.map(function (r) {
+        return linhaEdit(r.id, "remedios", r.hora + " · " + r.nome, r.motivo);
+      }).join("");
+      $("edit-exercicios").innerHTML = Casa.cadastro.exercicios.map(function (e) {
+        return linhaEdit(e.id, "exercicios", e.nome, e.detalhe);
+      }).join("");
+      $("edit-consultas").innerHTML = Casa.cadastro.consultas.map(function (c) {
+        return linhaEdit(c.id, "consultas", dataCurta(c.data) + " " + c.hora + " · " + c.medico, c.especialidade);
+      }).join("");
+      $("edit-contatos").innerHTML = Casa.cadastro.contatos.map(function (k) {
+        return linhaEdit(k.id, "contatos", k.nome, telefoneBonito(k.telefone));
+      }).join("");
+
+      $("cod-casa").textContent = Casa.codigo || "—";
+      $("nota-casa").textContent = !Casa.temServidor()
+        ? "Sem servidor configurado: este aparelho guarda tudo sozinho."
+        : Casa.estado === "ligada"
+          ? "Digite este código no outro celular para os dois verem a mesma coisa."
+          : "Sem conexão agora. O que você mudar fica guardado e sobe quando a rede voltar.";
+
+      relatorio();
+    }
+
+    function linhaEdit(id, lista, titulo, apoio) {
+      return '<div class="linha-edit"><div class="info"><b>' + esc(titulo) + "</b><span>" + esc(apoio) + "</span></div>" +
+        '<button class="apagar" data-apagar="' + id + '" data-lista="' + lista + '" aria-label="Apagar ' + esc(titulo) + '">' +
+        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9L18 7M10 11v5m4-5v5"/></svg></button></div>';
+    }
+
+    function relatorio() {
+      var dias = [];
+      for (var i = 6; i >= 0; i--) {
+        var d = new Date(); d.setDate(d.getDate() - i);
+        dias.push({ chave: chaveDia(d), rot: pad(d.getDate()) + "/" + pad(d.getMonth() + 1) });
+      }
+      var itens = Casa.cadastro.remedios.map(function (r) { return { id: r.id, nome: r.hora + " " + r.nome }; })
+        .concat(Casa.cadastro.exercicios.map(function (e) { return { id: e.id, nome: e.nome }; }));
+
+      if (!itens.length) { $("tabela-relatorio").innerHTML = "<tbody><tr><td>Nada cadastrado ainda.</td></tr></tbody>"; return; }
+
+      $("tabela-relatorio").innerHTML =
+        "<thead><tr><th>Item</th>" + dias.map(function (d) { return "<th>" + d.rot + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        itens.map(function (it) {
+          return "<tr><td>" + esc(it.nome) + "</td>" + dias.map(function (d) {
+            var r = Casa.resposta(it.id, d.chave);
+            var cls = r === "sim" ? "s" : r === "nao" ? "n" : "v";
+            return '<td><span class="marca-tab ' + cls + '">' + (r === "sim" ? "✓" : r === "nao" ? "✕" : "–") + "</span></td>";
+          }).join("") + "</tr>";
+        }).join("") + "</tbody>";
+    }
+
+    // ---------- lembrete de horario ----------
+    function checar() {
+      if (papel !== "idoso" || !$("fundo-lembrete").hidden) return;
+      var agora = agoraMin();
+      var achado = Casa.cadastro.remedios.filter(function (r) {
+        var m = minutos(r.hora);
+        return m <= agora && agora - m <= 45 && !Casa.resposta(r.id) && !dispensados[r.id];
+      }).sort(function (a, b) { return minutos(b.hora) - minutos(a.hora); })[0];
+      if (achado) abrirLembrete(achado);
+    }
+
+    function abrirLembrete(r) {
+      $("caixa-lembrete").innerHTML =
+        '<div class="cabeca">' + FIGURA.relogio(r.hora, 88, "#E02020") +
+        '<div><div class="hora-txt">' + esc(r.hora) + "</div>" +
+        '<div class="principal">' + esc(r.nome) + "</div>" +
+        '<div class="apoio">' + esc(r.motivo) + "</div></div></div>" +
+        '<p class="pergunta">Você já tomou este remédio?</p>' +
+        '<div class="par">' +
+        '<button class="resposta sim" data-lembrete="sim" data-id="' + r.id + '"><span class="marca">' + CERTO + '</span><span class="rot">Tomei</span></button>' +
+        '<button class="resposta nao" data-lembrete="nao" data-id="' + r.id + '"><span class="marca">' + ERRADO + '</span><span class="rot">Agora não</span></button></div>';
+      subirTopo();
+      $("fundo-lembrete").hidden = false;
+      if (navigator.vibrate) { try { navigator.vibrate([180, 90, 180]); } catch (e) {} }
+      avisarPorFora(r);
+    }
+
+    // a notificação do sistema — a que aparece por cima de tudo
+    function avisarPorFora(r) {
+      if (naDemo || !("Notification" in window) || Notification.permission !== "granted") return;
+      var corpo = r.hora + " — " + r.nome + (r.motivo ? " (" + r.motivo + ")" : "");
+      try {
+        if (navigator.serviceWorker && navigator.serviceWorker.ready) {
+          navigator.serviceWorker.ready.then(function (reg) {
+            reg.showNotification("Hora do remédio", {
+              body: corpo, icon: "icones/icone-192.png", badge: "icones/icone-192.png",
+              tag: "remedio-" + r.id, vibrate: [180, 90, 180], requireInteraction: true
+            });
+          }).catch(function () {});
+        } else {
+          new Notification("Hora do remédio", { body: corpo, icon: "icones/icone-192.png" });
+        }
+      } catch (e) {}
+    }
+
+    function pedirLigacao(nome, numero) {
+      $("ligacao-quem").textContent = nome;
+      $("ligacao-num").textContent = telefoneBonito(numero);
+      raiz.querySelector('[data-acao="ligacao-sim"]').dataset.numero = numero;
+      subirTopo();
+      $("fundo-ligacao").hidden = false;
+    }
+
+    // ---------- toques ----------
+    raiz.addEventListener("click", function (ev) {
+      var alvo = ev.target.closest("button");
+      if (!alvo || !raiz.contains(alvo)) return;
+      var acao = alvo.dataset.acao;
+
+      if (alvo.dataset.ir) return ir(alvo.dataset.ir);
+      if (alvo === $("voltar")) return ir(telaBase);
+
+      if (alvo.dataset.fonte) {
+        fator = parseFloat(alvo.dataset.fonte); aplicarEscala();
+        [].forEach.call(alvo.parentNode.children, function (b) { b.setAttribute("aria-pressed", b === alvo); });
+        return;
+      }
+
+      if (alvo.dataset.resp) return Casa.responder(alvo.dataset.id, alvo.dataset.resp);
+      if (alvo.dataset.consulta) return Casa.responderConsulta(alvo.dataset.id, alvo.dataset.consulta);
+
+      if (alvo.dataset.lembrete) {
+        if (alvo.dataset.lembrete === "sim") Casa.responder(alvo.dataset.id, "sim");
+        else dispensados[alvo.dataset.id] = true;
+        $("fundo-lembrete").hidden = true;
+        return desenhar();
+      }
+
+      if (alvo === $("btn-192")) return pedirLigacao("Ambulância (SAMU)", "192");
+      if (alvo.dataset.ligar) return pedirLigacao(alvo.dataset.nome, alvo.dataset.ligar);
+      if (acao === "ligacao-nao") { $("fundo-ligacao").hidden = true; return; }
+      if (acao === "ligacao-sim") {
+        $("fundo-ligacao").hidden = true;
+        window.location.href = "tel:" + String(alvo.dataset.numero || "").replace(/\D/g, "");
+        return;
+      }
+
+      if (acao === "pedir-avisos") {
+        if ("Notification" in window) Notification.requestPermission().then(function () { desenhar(); });
+        return;
+      }
+
+      // --- cadastro ---
+      if (acao === "add-remedio") {
+        if (!val("nr-nome")) return $("nr-nome").focus();
+        Casa.cadastro.remedios.push({ id: novoId(), hora: val("nr-hora") || "08:00", nome: val("nr-nome"), motivo: val("nr-motivo") || "—" });
+        limpar(["nr-nome", "nr-motivo"]); return Casa.mudou("cadastro");
+      }
+      if (acao === "add-exercicio") {
+        if (!val("ne-nome")) return $("ne-nome").focus();
+        Casa.cadastro.exercicios.push({ id: novoId(), nome: val("ne-nome"), detalhe: val("ne-detalhe") || "—" });
+        limpar(["ne-nome", "ne-detalhe"]); return Casa.mudou("cadastro");
+      }
+      if (acao === "add-consulta") {
+        if (!val("nc-medico")) return $("nc-medico").focus();
+        if (!val("nc-data")) return $("nc-data").focus();
+        Casa.cadastro.consultas.push({ id: novoId(), data: val("nc-data"), hora: val("nc-hora") || "09:00", medico: val("nc-medico"), especialidade: val("nc-esp") || "—" });
+        limpar(["nc-medico", "nc-esp"]); return Casa.mudou("cadastro");
+      }
+      if (acao === "add-contato") {
+        if (!val("nk-nome")) return $("nk-nome").focus();
+        if (!val("nk-tel")) return $("nk-tel").focus();
+        Casa.cadastro.contatos.push({ id: novoId(), nome: val("nk-nome"), telefone: val("nk-tel") });
+        limpar(["nk-nome", "nk-tel"]); return Casa.mudou("cadastro");
+      }
+      if (alvo.dataset.apagar) {
+        var qual = alvo.dataset.lista, id = alvo.dataset.apagar;
+        Casa.cadastro[qual] = Casa.cadastro[qual].filter(function (x) { return x.id !== id; });
+        return Casa.mudou("cadastro");
+      }
+
+      if (acao === "espiar") return ir("inicio");
+      if (acao === "imprimir") { montarAgenda(); return window.print(); }
+      if (acao === "desparear" && window.Aparelho) return window.Aparelho.desligar();
+    });
+
+    raiz.addEventListener("change", function (ev) {
+      if (ev.target === $("cfg-trato") || ev.target === $("cfg-nome")) {
+        Casa.cadastro.perfil = { trato: val("cfg-trato"), nome: val("cfg-nome") };
+        Casa.mudou("cadastro");
+      }
+    });
+
+    raiz.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      $("fundo-lembrete").hidden = true;
+      $("fundo-ligacao").hidden = true;
+    });
+
+    // ---------- liga na casa ----------
+    Casa.assinar(desenhar);
+    $("nc-data").value = Casa.hoje();
+    $("btn-trocar").hidden = (papel !== "idoso");
+    ir(telaBase);
+    if (papel === "idoso") { checar(); relogioLembrete = setInterval(checar, 30000); }
+
+    return {
+      raiz: raiz,
+      desenhar: desenhar,
+      mostrarLembrete: function () {
+        abrirLembrete(Casa.cadastro.remedios[0] || { id: "demo", hora: "18:30", nome: "Metformina", motivo: "Diabetes" });
+      },
+      destruir: function () { clearInterval(relogioLembrete); caixa.innerHTML = ""; }
+    };
+  }
+
+  // ============================================================
+  // AGENDA DE PAPEL — o caderno para quem não usa celular
+  // ============================================================
+  function montarAgenda() {
+    var alvo = document.getElementById("agenda");
+    if (!alvo) return;
+    var c = Casa.cadastro, p = c.perfil || {}, q = '<span class="quadro"></span>';
+    alvo.innerHTML =
+      "<h1>Viva com Cuidado</h1>" +
+      '<p class="quem-papel"><b>' + esc(((p.trato || "") + " " + (p.nome || "")).trim()) + "</b> · " + esc(porExtenso(new Date())) + "</p>" +
+      "<h2>Meus remédios</h2><ul>" +
+      c.remedios.slice().sort(function (a, b) { return minutos(a.hora) - minutos(b.hora); })
+        .map(function (r) { return "<li>" + q + "<b>" + esc(r.hora) + "</b> — " + esc(r.nome) + " (" + esc(r.motivo) + ")</li>"; }).join("") +
+      "</ul><h2>Meus exercícios</h2><ul>" +
+      c.exercicios.map(function (e) { return "<li>" + q + esc(e.nome) + " — " + esc(e.detalhe) + "</li>"; }).join("") +
+      "</ul><h2>Minhas consultas</h2><ul>" +
+      c.consultas.map(function (x) { return "<li>" + q + "<b>" + dataCurta(x.data) + " " + esc(x.hora) + "</b> — " + esc(x.medico) + " (" + esc(x.especialidade) + ")</li>"; }).join("") +
+      "</ul><h2>Telefones</h2><ul><li><b>192</b> — Ambulância (SAMU)</li>" +
+      c.contatos.map(function (k) { return "<li><b>" + esc(telefoneBonito(k.telefone)) + "</b> — " + esc(k.nome) + "</li>"; }).join("") +
+      '</ul><p class="rodape-papel">Marque o quadradinho quando fizer. Guarde esta folha em lugar visível.</p>';
+  }
+
+  window.criarApp = criarApp;
+  window.montarAgenda = montarAgenda;
+})();
+
+</script>
+
+<script>
+
+/* A demonstração é uma casa como qualquer outra — o nome dela é DEMO.
+   Se o Firebase estiver configurado, você pode abrir esta mesma página
+   em dois computadores e eles também se veem. */
+(function () {
+  "use strict";
+  function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
+
+  Casa.ligarServidor();
+  Casa.abrir("DEMO", "responsavel");
+
+  var quemCuida = criarApp(el("fone-resp"), "responsavel", .74);
+  var pessoaCuidada = criarApp(el("fone-idoso"), "idoso", .74);
+
+  document.querySelector(".demo-barra").addEventListener("click", function (ev) {
+    var alvo = ev.target.closest("button");
+    if (!alvo) return;
+    if (alvo.dataset.acao === "lembrete") return pessoaCuidada.mostrarLembrete();
+    if (alvo.dataset.acao === "recomecar") return Casa.recomecar();
+  });
+})();
+
+</script>
