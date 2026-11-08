@@ -141,16 +141,24 @@ sobe sozinho quando a rede voltar.
 
 ## 4. Usar
 
-No primeiro uso cada aparelho pergunta de quem ele é.
+Ao abrir, o app mostra **Quem vai usar agora?** com os perfis cadastrados neste
+aparelho. Na primeira vez, toque em **Fazer meu cadastro**.
 
-- No celular de **quem cuida**: *Sou quem cuida* → anote o código de 6 caracteres.
-- No celular de **quem é cuidado**: *Sou a pessoa cuidada* → digite aquele código.
+- **Quem cuida**: seu nome, *Quem cuida*, e o nome de quem você cuida. Deixe o
+  código em branco: o app cria a casa e mostra um código de 6 caracteres.
+  Anote esse código. Outro familiar que também cuida faz o mesmo cadastro,
+  mas preenche o código.
+- **Pessoa cuidada**: seu nome, *A pessoa cuidada*, e o código da casa. O app
+  confere se a casa existe antes de entrar.
 
 Pronto: os dois estão na mesma casa. Quem cuida cadastra remédios, exercícios,
 consultas e telefones; a pessoa cuidada vê o dia dela e responde ✓ / ✕; e o
 relatório dos últimos 7 dias aparece do lado de quem cuida.
 
-Errou o pareamento? *Este aparelho não é o certo*, no rodapé da tela inicial.
+Toda casa nova começa vazia. Os dados de exemplo aparecem só na demonstração.
+
+Um mesmo aparelho pode ter vários perfis. *Trocar de perfil* volta para a lista;
+*Remover um perfil* tira o perfil deste aparelho, sem apagar os dados da casa.
 
 ---
 
@@ -186,7 +194,7 @@ marcar à mão.
 | Cores, tamanho de letra, o jeito dos botões | `css/estilo.css`, bloco `:root` |
 | Textos e telas | `js/telas.js`, constante `HTML_TELAS` |
 | Os desenhos coloridos | `js/figuras.js` |
-| Dados de exemplo | `js/dados.js`, constante `SEMENTE` |
+| Dados de exemplo (só na demonstração) | `js/dados.js`, constante `SEMENTE` |
 | Nome e ícone do app instalado | `manifest.json` |
 | Desenho do ícone | `ferramentas/gerar-icones.js`, depois rode `node ferramentas/gerar-icones.js` |
 

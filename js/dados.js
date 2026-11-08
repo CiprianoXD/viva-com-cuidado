@@ -71,7 +71,7 @@ window.Casa = (function () {
   var Casa = {
     codigo: null,
     papel: "idoso",
-    cadastro: arrumarCadastro(clonar(SEMENTE)),
+    cadastro: arrumarCadastro(null),
     registro: { dias: {}, consultas: {} },
     estado: "sozinha",          // sozinha | procurando | ligada
     ouvintes: [],
@@ -164,8 +164,24 @@ window.Casa = (function () {
       };
     },
 
+    // ---------- a casa existe? (antes de entrar com um codigo digitado) ----------
+    // Responde true, false, ou null quando nao da para saber agora
+    // (sem internet, ou servidor da casa) — nesse caso o app deixa entrar.
+    casaExiste: function (codigo) {
+      var eu = this;
+      return new Promise(function (responder) {
+        if (!eu._bd) return responder(null);
+        var desistiu = setTimeout(function () { responder(null); }, 6000);
+        eu._bd.ref("casas/" + codigo + "/cadastro").once("value").then(function (s) {
+          clearTimeout(desistiu); responder(s.exists());
+        }, function () { clearTimeout(desistiu); responder(null); });
+      });
+    },
+
     // ---------- abre uma casa ----------
-    abrir: function (codigo, papel) {
+    // Casa nova comeca vazia. A demonstracao passa Casa.SEMENTE para
+    // ter o que mostrar.
+    abrir: function (codigo, papel, semente) {
       var eu = this;
       eu.fechar();
       eu.codigo = codigo;
@@ -173,7 +189,7 @@ window.Casa = (function () {
 
       // 1. o que ja estava neste aparelho aparece na hora
       var local = buscar("viva:casa:" + codigo);
-      eu.cadastro = arrumarCadastro(local && local.cadastro ? local.cadastro : clonar(SEMENTE));
+      eu.cadastro = arrumarCadastro(local && local.cadastro ? local.cadastro : semente ? clonar(semente) : null);
       eu.registro = arrumarRegistro(local && local.registro);
       eu.avisar();
 

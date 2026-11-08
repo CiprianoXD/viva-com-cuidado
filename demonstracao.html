@@ -60,7 +60,7 @@
   function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
 
   Casa.ligarServidor();
-  Casa.abrir("DEMO", "responsavel");
+  Casa.abrir("DEMO", "responsavel", Casa.SEMENTE);
 
   var quemCuida = criarApp(el("fone-resp"), "responsavel", .74);
   var pessoaCuidada = criarApp(el("fone-idoso"), "idoso", .74);

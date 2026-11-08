@@ -23,53 +23,84 @@
 </head>
 <body>
 
-<!-- ===================== PRIMEIRA ABERTURA ===================== -->
+<!-- ===================== TELA INICIAL: QUEM VAI USAR ===================== -->
 <div class="abertura" id="tela-parear">
   <div class="abertura-caixa">
 
-    <div data-passo="inicio">
+    <!-- os perfis cadastrados neste aparelho -->
+    <div data-passo="perfis">
       <div class="marca-alta">
         <img src="icones/icone-192.png" alt="" width="84" height="84">
         <h1>Viva com Cuidado</h1>
-        <p>Dois aparelhos ligados: quem cuida cadastra, quem é cuidado confirma.</p>
+        <p>Quem cuida cadastra, quem é cuidado confirma.</p>
       </div>
 
-      <p class="pergunta-forte">Este aparelho é de quem?</p>
-      <div class="escolhas">
-        <button class="escolha" data-acao="quero-cuidar">
-          <span data-el="fig-cuida"></span>
-          <span><b>Sou quem cuida</b><span class="apoio">Cadastro os remédios e acompanho o dia</span></span>
-        </button>
+      <div data-el="com-perfis">
+        <p class="pergunta-forte" data-el="pergunta-perfis">Quem vai usar agora?</p>
+        <div class="escolhas" data-el="lista-perfis"></div>
+        <div class="campos"><button class="botao" data-acao="novo-cadastro">Novo cadastro</button></div>
+        <button class="voltar-txt" data-acao="modo-remover" data-el="btn-modo-remover">Remover um perfil</button>
+      </div>
 
-        <button class="escolha" data-acao="quero-ser-cuidado">
-          <span data-el="fig-cuidado"></span>
-          <span><b>Sou a pessoa cuidada</b><span class="apoio">Vejo o que tenho para hoje e confirmo</span></span>
-        </button>
+      <div data-el="sem-perfis" hidden>
+        <p class="pergunta-forte">Bem-vindo!</p>
+        <p class="texto-centro">Ninguém cadastrado neste aparelho ainda. Faça o seu cadastro para começar.</p>
+        <div class="campos"><button class="botao" data-acao="novo-cadastro">Fazer meu cadastro</button></div>
       </div>
 
       <a class="link-discreto" href="demonstracao.html" style="text-align:center; text-decoration:none">Ver os dois aparelhos funcionando</a>
       <div class="status-linha"><span class="bolinha" data-el="bolinha-parear"></span><span data-el="status-parear">Verificando…</span></div>
     </div>
 
+    <!-- cadastro simples -->
+    <div data-passo="cadastro" hidden>
+      <div class="marca-alta">
+        <h1>Novo cadastro</h1>
+        <p>Leva menos de um minuto.</p>
+      </div>
+
+      <label class="campo">Seu nome<input data-el="cad-nome" autocomplete="given-name" placeholder="Maria"></label>
+
+      <p class="pergunta-forte" style="margin-top:26px">Você é:</p>
+      <div class="escolhas">
+        <button class="escolha" data-papel="responsavel" aria-pressed="false">
+          <span data-el="fig-cuida"></span>
+          <span><b>Quem cuida</b><span class="apoio">Cadastro os remédios e acompanho o dia</span></span>
+        </button>
+        <button class="escolha" data-papel="idoso" aria-pressed="false">
+          <span data-el="fig-cuidado"></span>
+          <span><b>A pessoa cuidada</b><span class="apoio">Vejo o que tenho para hoje e confirmo</span></span>
+        </button>
+      </div>
+
+      <div data-el="so-cuidador" hidden>
+        <div class="campos duo" style="margin-top:22px">
+          <label class="campo">Tratamento<select data-el="cad-trato"><option>Sr.</option><option>Sra.</option><option value="">Sem tratamento</option></select></label>
+          <label class="campo">Quem você cuida<input data-el="cad-nome-cuidado" placeholder="José"></label>
+        </div>
+      </div>
+
+      <div data-el="bloco-codigo" hidden>
+        <label class="campo" style="margin-top:22px"><span data-el="rot-codigo">Código da casa</span>
+          <input class="entrada-codigo" data-el="cad-codigo" maxlength="6" autocapitalize="characters" autocomplete="off" placeholder="ABC123">
+        </label>
+        <p class="nota" data-el="nota-codigo" style="margin-top:8px"></p>
+      </div>
+
+      <p class="erro" data-el="erro-cadastro" hidden></p>
+      <div class="campos"><button class="botao" data-acao="salvar-cadastro" data-el="btn-salvar">Salvar e entrar</button></div>
+      <button class="voltar-txt" data-acao="voltar-perfis">Voltar</button>
+    </div>
+
+    <!-- casa nova: mostra o codigo para o outro celular -->
     <div data-passo="codigo-novo" hidden>
       <div class="marca-alta">
         <h1>Código da casa</h1>
-        <p>Anote. Você vai digitá-lo uma vez no celular de quem você cuida.</p>
+        <p>Anote. A pessoa cuidada vai digitá-lo uma vez, no cadastro do celular dela.</p>
       </div>
       <div class="codigo-grande" data-el="codigo-novo"></div>
+      <p class="texto-centro nota">Você também encontra este código depois, no fim da sua tela, em <b>Esta casa</b>.</p>
       <button class="botao" data-acao="confirmar-cuidador">Continuar</button>
-      <button class="voltar-txt" data-acao="tenho-codigo">Já tenho um código</button>
-    </div>
-
-    <div data-passo="pedir-codigo" hidden>
-      <div class="marca-alta">
-        <h1>Digite o código</h1>
-        <p>É o código que aparece no celular de quem cuida. Seis letras e números.</p>
-      </div>
-      <input class="campo-codigo" data-el="entrada-codigo" maxlength="6" autocapitalize="characters" autocomplete="off" inputmode="text" aria-label="Código da casa">
-      <p class="erro" data-el="erro-codigo" hidden></p>
-      <div class="campos"><button class="botao" data-acao="entrar-codigo">Entrar</button></div>
-      <button class="voltar-txt" data-acao="voltar-inicio">Voltar</button>
     </div>
 
   </div>
@@ -91,19 +122,29 @@
 
 <script>
 /* ============================================================
-   ESTE APARELHO — lembra quem ele é e abre o app certo.
+   ESTE APARELHO — os perfis cadastrados e qual está aberto.
+   ------------------------------------------------------------
+   Um perfil é: nome, papel (quem cuida / pessoa cuidada) e o
+   código da casa. Fica guardado só neste aparelho. Os dados da
+   casa (remédios, respostas…) ficam na casa, não no perfil.
    ============================================================ */
 (function () {
   "use strict";
 
   var ALFABETO = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";   // sem I, O, 0 e 1: confundem
+  var CHAVE_PERFIS = "viva:perfis";
   var telaParear = document.getElementById("tela-parear");
   var palcoApp = document.getElementById("palco-app");
-  var codigoNovo = null;
+
+  var papelEscolhido = null;   // no formulário de cadastro
+  var modoRemover = false;
+  var casaNova = null;         // { perfil, pessoa } enquanto mostra o código
 
   function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
   function guardar(c, v) { try { localStorage.setItem(c, JSON.stringify(v)); } catch (e) {} }
   function buscar(c) { try { var v = localStorage.getItem(c); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function limparCodigo(t) { return String(t || "").toUpperCase().replace(/[^A-Z0-9]/g, ""); }
 
   function sorteioCodigo() {
     var s = "";
@@ -111,83 +152,196 @@
     return s;
   }
 
+  // ---------- limpeza única: apaga os dados de exemplo da versão anterior ----------
+  if (!buscar("viva:dados-v2")) {
+    try {
+      Object.keys(localStorage).forEach(function (k) { if (k.indexOf("viva:") === 0) localStorage.removeItem(k); });
+    } catch (e) {}
+    guardar("viva:dados-v2", true);
+  }
+
+  var Perfis = {
+    todos: function () { return buscar(CHAVE_PERFIS) || []; },
+    salvar: function (l) { guardar(CHAVE_PERFIS, l); },
+    adicionar: function (p) { var l = this.todos(); l.push(p); this.salvar(l); },
+    remover: function (id) {
+      var l = this.todos(), p = l.filter(function (x) { return x.id === id; })[0];
+      this.salvar(l.filter(function (x) { return x.id !== id; }));
+      // Ninguém mais neste aparelho usa aquela casa? Apaga a cópia local dela.
+      if (p && !this.todos().some(function (x) { return x.codigo === p.codigo; })) {
+        try { localStorage.removeItem("viva:casa:" + p.codigo); } catch (e) {}
+      }
+    },
+    achar: function (id) { return this.todos().filter(function (x) { return x.id === id; })[0]; }
+  };
+
   function passo(qual) {
     [].forEach.call(document.querySelectorAll("[data-passo]"), function (p) {
       p.hidden = p.dataset.passo !== qual;
     });
+    window.scrollTo(0, 0);
   }
 
+  // ---------- a lista de perfis ----------
+  function desenharPerfis() {
+    var lista = Perfis.todos();
+    if (!lista.length) modoRemover = false;
+    el("com-perfis").hidden = !lista.length;
+    el("sem-perfis").hidden = !!lista.length;
+    el("pergunta-perfis").textContent = modoRemover ? "Qual perfil remover?" : "Quem vai usar agora?";
+    el("btn-modo-remover").textContent = modoRemover ? "Pronto, não remover" : "Remover um perfil";
+    el("lista-perfis").innerHTML = lista.map(function (p) {
+      var cuida = p.papel === "responsavel";
+      return '<button class="escolha perfil' + (modoRemover ? " removendo" : "") + '" data-perfil="' + esc(p.id) + '">' +
+        (cuida ? FIGURA.cuidador(64) : FIGURA.pessoa(64)) +
+        '<span><b>' + esc(p.nome) + '</b><span class="apoio">' +
+          (cuida ? "Quem cuida · casa " + esc(p.codigo) : "Pessoa cuidada") + "</span>" +
+          (modoRemover ? '<span class="tag-remover">Tocar para remover</span>' : "") +
+        "</span></button>";
+    }).join("");
+  }
+
+  function mostrarPerfis() {
+    passo("perfis");
+    desenharPerfis();
+    pintarStatusParear();
+  }
+
+  // ---------- o formulário de cadastro ----------
+  function abrirCadastro() {
+    papelEscolhido = null;
+    ["cad-nome", "cad-nome-cuidado", "cad-codigo"].forEach(function (n) { el(n).value = ""; });
+    el("cad-trato").value = "Sr.";
+    el("erro-cadastro").hidden = true;
+    pintarPapel();
+    passo("cadastro");
+    el("cad-nome").focus();
+  }
+
+  function pintarPapel() {
+    [].forEach.call(telaParear.querySelectorAll("[data-papel]"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.papel === papelEscolhido));
+    });
+    var cuida = papelEscolhido === "responsavel";
+    el("so-cuidador").hidden = !cuida;
+    el("bloco-codigo").hidden = !papelEscolhido;
+    el("rot-codigo").textContent = cuida ? "Código da casa (opcional)" : "Código da casa";
+    el("nota-codigo").textContent = cuida
+      ? "Deixe em branco para criar uma casa nova. Preencha só se outra pessoa da família já cadastrou a casa."
+      : "É o código que aparece no celular de quem cuida, em Esta casa. Seis letras e números.";
+  }
+
+  function erro(msg, foco) {
+    el("erro-cadastro").textContent = msg;
+    el("erro-cadastro").hidden = false;
+    if (foco) el(foco).focus();
+  }
+
+  function salvarCadastro() {
+    el("erro-cadastro").hidden = true;
+    var nome = el("cad-nome").value.trim();
+    var cod = limparCodigo(el("cad-codigo").value);
+    if (!nome) return erro("Escreva o seu nome.", "cad-nome");
+    if (!papelEscolhido) return erro("Toque em quem você é: quem cuida ou a pessoa cuidada.");
+
+    var cuida = papelEscolhido === "responsavel";
+    var pessoa = { trato: el("cad-trato").value, nome: el("cad-nome-cuidado").value.trim() };
+    if (cuida && !cod && !pessoa.nome) return erro("Escreva o nome de quem você cuida.", "cad-nome-cuidado");
+    if (!cuida && !cod) return erro("Digite o código da casa.", "cad-codigo");
+    if (cod && cod.length !== 6) return erro("O código tem 6 letras ou números.", "cad-codigo");
+
+    var perfil = { id: "p" + Date.now().toString(36), nome: nome, papel: papelEscolhido, codigo: cod };
+
+    // Casa nova: sorteia o código e mostra para anotar.
+    if (!cod) {
+      perfil.codigo = sorteioCodigo();
+      Perfis.adicionar(perfil);
+      casaNova = { perfil: perfil, pessoa: pessoa };
+      el("codigo-novo").textContent = perfil.codigo;
+      return passo("codigo-novo");
+    }
+
+    // Código digitado: confere se a casa existe antes de entrar.
+    var btn = el("btn-salvar");
+    btn.disabled = true; btn.textContent = "Procurando a casa…";
+    Casa.casaExiste(cod).then(function (existe) {
+      btn.disabled = false; btn.textContent = "Salvar e entrar";
+      if (existe === false) return erro("Não encontramos uma casa com o código " + cod + ". Confira com quem cuida.", "cad-codigo");
+      Perfis.adicionar(perfil);
+      Aparelho.abrir(perfil);
+    });
+  }
+
+  // ---------- abrir / sair de um perfil ----------
   var Aparelho = {
     app: null,
+    perfil: null,
 
-    ligar: function (papel, codigo) {
-      guardar("viva:aparelho", { papel: papel, codigo: codigo });
-      this.abrir(papel, codigo);
-    },
-
-    abrir: function (papel, codigo) {
+    abrir: function (perfil, pessoaNova) {
       this.fechar();
+      this.perfil = perfil;
       telaParear.hidden = true;
       palcoApp.hidden = false;
-      Casa.abrir(codigo, papel);
-      this.app = criarApp(palcoApp, papel);
+      Casa.abrir(perfil.codigo, perfil.papel);
+      if (pessoaNova) {   // quem cuida acabou de criar a casa
+        Casa.cadastro.perfil = { trato: pessoaNova.trato, nome: pessoaNova.nome };
+        Casa.mudou("cadastro");
+      }
+      this.app = criarApp(palcoApp, perfil.papel, 1, perfil.nome);
+      window.scrollTo(0, 0);
     },
 
-    desligar: function () {
-      try { localStorage.removeItem("viva:aparelho"); } catch (e) {}
+    // volta para a lista de perfis; o perfil continua cadastrado
+    sair: function () {
       this.fechar();
       Casa.fechar();
+      Casa.assinar(pintarStatusParear);
       palcoApp.hidden = true;
       telaParear.hidden = false;
-      passo("inicio");
-      pintarStatusParear();
+      mostrarPerfis();
     },
 
     fechar: function () {
       if (this.app) { this.app.destruir(); this.app = null; }
+      this.perfil = null;
       Casa.esquecerTodos();
     }
   };
   window.Aparelho = Aparelho;
 
-  // ---------- toques da tela de pareamento ----------
+  // ---------- toques ----------
   telaParear.addEventListener("click", function (ev) {
     var alvo = ev.target.closest("button");
     if (!alvo) return;
     var acao = alvo.dataset.acao;
 
-    if (acao === "quero-cuidar") {
-      codigoNovo = sorteioCodigo();
-      el("codigo-novo").textContent = codigoNovo;
-      return passo("codigo-novo");
-    }
-    if (acao === "confirmar-cuidador") return Aparelho.ligar("responsavel", codigoNovo);
-
-    if (acao === "tenho-codigo" || acao === "quero-ser-cuidado") {
-      telaParear.dataset.papel = (acao === "tenho-codigo") ? "responsavel" : "idoso";
-      el("entrada-codigo").value = "";
-      el("erro-codigo").hidden = true;
-      passo("pedir-codigo");
-      return el("entrada-codigo").focus();
-    }
-    if (acao === "voltar-inicio") return passo("inicio");
-
-    if (acao === "entrar-codigo") {
-      var cod = (el("entrada-codigo").value || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-      if (cod.length !== 6) {
-        el("erro-codigo").textContent = "O código tem 6 letras ou números.";
-        el("erro-codigo").hidden = false;
-        return el("entrada-codigo").focus();
+    if (alvo.dataset.perfil) {
+      var p = Perfis.achar(alvo.dataset.perfil);
+      if (!p) return desenharPerfis();
+      if (modoRemover) {
+        if (window.confirm("Remover o perfil de " + p.nome + " deste aparelho?\n\nOs dados da casa continuam guardados para os outros aparelhos.")) {
+          Perfis.remover(p.id);
+          desenharPerfis();
+        }
+        return;
       }
-      return Aparelho.ligar(telaParear.dataset.papel || "idoso", cod);
+      return Aparelho.abrir(p);
+    }
+    if (alvo.dataset.papel) { papelEscolhido = alvo.dataset.papel; el("erro-cadastro").hidden = true; return pintarPapel(); }
+
+    if (acao === "novo-cadastro") { modoRemover = false; return abrirCadastro(); }
+    if (acao === "modo-remover") { modoRemover = !modoRemover; return desenharPerfis(); }
+    if (acao === "voltar-perfis") return mostrarPerfis();
+    if (acao === "salvar-cadastro") return salvarCadastro();
+    if (acao === "confirmar-cuidador" && casaNova) {
+      var c = casaNova; casaNova = null;
+      return Aparelho.abrir(c.perfil, c.pessoa);
     }
   });
 
-  el("entrada-codigo").addEventListener("input", function () {
-    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  });
-  el("entrada-codigo").addEventListener("keydown", function (ev) {
-    if (ev.key === "Enter") telaParear.querySelector('[data-acao="entrar-codigo"]').click();
+  el("cad-codigo").addEventListener("input", function () { this.value = limparCodigo(this.value); });
+  telaParear.addEventListener("keydown", function (ev) {
+    if (ev.key === "Enter" && ev.target.tagName === "INPUT") salvarCadastro();
   });
 
   function pintarStatusParear() {
@@ -197,7 +351,7 @@
       t.textContent = "Sem servidor: cada aparelho guarda os dados por conta própria.";
     } else if (Casa.estado === "ligada") {
       b.className = "bolinha ok";
-      t.textContent = "Conexão pronta: os dois aparelhos vão se ver.";
+      t.textContent = "Conexão pronta: os aparelhos vão se ver.";
     } else {
       b.className = "bolinha";
       t.textContent = "Procurando conexão…";
@@ -205,17 +359,12 @@
   }
 
   // ---------- arranque ----------
-  // as figuras da tela de abertura
-  el("fig-cuida").innerHTML = FIGURA.cuidador(74);
-  el("fig-cuidado").innerHTML = FIGURA.pessoa(74);
+  el("fig-cuida").innerHTML = FIGURA.cuidador(64);
+  el("fig-cuidado").innerHTML = FIGURA.pessoa(64);
 
   Casa.ligarServidor();
   Casa.assinar(pintarStatusParear);
-  passo("inicio");
-  pintarStatusParear();
-
-  var lembrado = buscar("viva:aparelho");
-  if (lembrado && lembrado.codigo) Aparelho.abrir(lembrado.papel, lembrado.codigo);
+  mostrarPerfis();
 
   // ---------- vira app instalável ----------
   if ("serviceWorker" in navigator) {

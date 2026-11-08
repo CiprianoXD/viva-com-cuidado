@@ -135,6 +135,21 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 .voltar-txt { display: block; width: 100%; margin-top: 8px; padding: 18px; color: var(--azul); text-decoration: underline; }
 .erro { color: var(--vermelho); text-align: center; margin: 12px 0 0; }
 
+/* --- perfis e cadastro --- */
+.texto-centro { text-align: center; margin: 0 0 8px; text-wrap: balance; }
+.escolha[aria-pressed="true"] { border-color: var(--azul); border-width: 4px; background: #EAF2FD; }
+.escolha[aria-pressed="true"] b { color: var(--azul); }
+.escolha.perfil { min-height: 96px; }
+.escolha.removendo { border-color: var(--vermelho); border-style: dashed; }
+.tag-remover { display: block; margin-top: 4px; color: var(--vermelho); font-size: var(--t-apoio); }
+.entrada-codigo { text-transform: uppercase; letter-spacing: .14em; text-align: center; }
+.entrada-codigo::placeholder { letter-spacing: .14em; color: #B8C0C8; }
+.botao:disabled { opacity: .6; }
+.ola-usuario {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-titulo); margin: 6px 0 4px;
+}
+
 /* ============================================================
    O APP
    ============================================================ */

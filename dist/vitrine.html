@@ -141,6 +141,21 @@ button { font: inherit; color: inherit; cursor: pointer; border: 0; background: 
 .voltar-txt { display: block; width: 100%; margin-top: 8px; padding: 18px; color: var(--azul); text-decoration: underline; }
 .erro { color: var(--vermelho); text-align: center; margin: 12px 0 0; }
 
+/* --- perfis e cadastro --- */
+.texto-centro { text-align: center; margin: 0 0 8px; text-wrap: balance; }
+.escolha[aria-pressed="true"] { border-color: var(--azul); border-width: 4px; background: #EAF2FD; }
+.escolha[aria-pressed="true"] b { color: var(--azul); }
+.escolha.perfil { min-height: 96px; }
+.escolha.removendo { border-color: var(--vermelho); border-style: dashed; }
+.tag-remover { display: block; margin-top: 4px; color: var(--vermelho); font-size: var(--t-apoio); }
+.entrada-codigo { text-transform: uppercase; letter-spacing: .14em; text-align: center; }
+.entrada-codigo::placeholder { letter-spacing: .14em; color: #B8C0C8; }
+.botao:disabled { opacity: .6; }
+.ola-usuario {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: var(--t-titulo); margin: 6px 0 4px;
+}
+
 /* ============================================================
    O APP
    ============================================================ */
@@ -751,7 +766,7 @@ window.Casa = (function () {
   var Casa = {
     codigo: null,
     papel: "idoso",
-    cadastro: arrumarCadastro(clonar(SEMENTE)),
+    cadastro: arrumarCadastro(null),
     registro: { dias: {}, consultas: {} },
     estado: "sozinha",          // sozinha | procurando | ligada
     ouvintes: [],
@@ -844,8 +859,24 @@ window.Casa = (function () {
       };
     },
 
+    // ---------- a casa existe? (antes de entrar com um codigo digitado) ----------
+    // Responde true, false, ou null quando nao da para saber agora
+    // (sem internet, ou servidor da casa) — nesse caso o app deixa entrar.
+    casaExiste: function (codigo) {
+      var eu = this;
+      return new Promise(function (responder) {
+        if (!eu._bd) return responder(null);
+        var desistiu = setTimeout(function () { responder(null); }, 6000);
+        eu._bd.ref("casas/" + codigo + "/cadastro").once("value").then(function (s) {
+          clearTimeout(desistiu); responder(s.exists());
+        }, function () { clearTimeout(desistiu); responder(null); });
+      });
+    },
+
     // ---------- abre uma casa ----------
-    abrir: function (codigo, papel) {
+    // Casa nova comeca vazia. A demonstracao passa Casa.SEMENTE para
+    // ter o que mostrar.
+    abrir: function (codigo, papel, semente) {
       var eu = this;
       eu.fechar();
       eu.codigo = codigo;
@@ -853,7 +884,7 @@ window.Casa = (function () {
 
       // 1. o que ja estava neste aparelho aparece na hora
       var local = buscar("viva:casa:" + codigo);
-      eu.cadastro = arrumarCadastro(local && local.cadastro ? local.cadastro : clonar(SEMENTE));
+      eu.cadastro = arrumarCadastro(local && local.cadastro ? local.cadastro : semente ? clonar(semente) : null);
       eu.registro = arrumarRegistro(local && local.registro);
       eu.avisar();
 
@@ -1063,7 +1094,7 @@ window.Casa = (function () {
       '<div class="rodape">' +
         '<div class="status-linha"><span class="bolinha" data-el="bolinha-app"></span><span data-el="status-app"></span></div>' +
         '<button class="voltar-txt" data-acao="pedir-avisos" data-el="btn-avisos" hidden>Ativar os avisos de horário</button>' +
-        '<button class="voltar-txt" data-acao="desparear" data-el="btn-trocar" hidden>Este aparelho não é o certo</button>' +
+        '<button class="voltar-txt" data-acao="trocar-perfil" data-el="btn-trocar" hidden>Trocar de perfil</button>' +
       '</div>' +
     '</section>' +
 
@@ -1079,6 +1110,7 @@ window.Casa = (function () {
 
     // ---------- quem cuida ----------
     '<section class="tela" data-tela="responsavel" hidden>' +
+      '<p class="ola-usuario" data-el="ola-usuario" hidden></p>' +
       '<div class="bloco">' +
         '<h3>Como foi o dia</h3>' +
         '<p class="nota">Os últimos 7 dias. ✓ feito · ✕ não feito · – sem resposta.</p>' +
@@ -1135,7 +1167,7 @@ window.Casa = (function () {
         '<div class="campos">' +
           '<button class="botao claro" data-acao="espiar">Ver a tela dela</button>' +
           '<button class="botao claro" data-acao="imprimir">Imprimir agenda de papel</button>' +
-          '<button class="botao claro" data-acao="desparear">Desligar este aparelho da casa</button></div>' +
+          '<button class="botao claro" data-acao="trocar-perfil" data-el="btn-trocar-resp">Trocar de perfil</button></div>' +
       '</div>' +
     '</section>' +
 
@@ -1158,7 +1190,8 @@ window.Casa = (function () {
   // ============================================================
   // MONTA UM APP
   // ============================================================
-  function criarApp(caixa, papel, escalaBase) {
+  // usuario: o nome de quem entrou neste perfil (opcional).
+  function criarApp(caixa, papel, escalaBase, usuario) {
     caixa.innerHTML = HTML_TELAS;
 
     var raiz = caixa.querySelector(".app");
@@ -1224,7 +1257,7 @@ window.Casa = (function () {
     function inicio() {
       var p = Casa.cadastro.perfil || {};
       $("saudacao").textContent = saudacaoDaHora();
-      $("nome-pessoa").textContent = ((p.trato || "") + " " + (p.nome || "")).trim() || "Bem-vindo";
+      $("nome-pessoa").textContent = ((p.trato || "") + " " + (p.nome || "")).trim() || usuario || "Bem-vindo";
       $("data-hoje").textContent = porExtenso(new Date());
 
       selo("selo-remedios", Casa.cadastro.remedios);
@@ -1503,7 +1536,7 @@ window.Casa = (function () {
 
       if (acao === "espiar") return ir("inicio");
       if (acao === "imprimir") { montarAgenda(); return window.print(); }
-      if (acao === "desparear" && window.Aparelho) return window.Aparelho.desligar();
+      if (acao === "trocar-perfil" && window.Aparelho) return window.Aparelho.sair();
     });
 
     raiz.addEventListener("change", function (ev) {
@@ -1522,7 +1555,10 @@ window.Casa = (function () {
     // ---------- liga na casa ----------
     Casa.assinar(desenhar);
     $("nc-data").value = Casa.hoje();
-    $("btn-trocar").hidden = (papel !== "idoso");
+    // Trocar de perfil so existe no app de verdade, nao na demonstracao.
+    $("btn-trocar").hidden = (papel !== "idoso" || naDemo);
+    $("btn-trocar-resp").hidden = naDemo;
+    if (usuario && papel === "responsavel") { $("ola-usuario").textContent = "Olá, " + usuario; $("ola-usuario").hidden = false; }
     ir(telaBase);
     if (papel === "idoso") { checar(); relogioLembrete = setInterval(checar, 30000); }
 
@@ -1574,7 +1610,7 @@ window.Casa = (function () {
   function el(n) { return document.querySelector('[data-el="' + n + '"]'); }
 
   Casa.ligarServidor();
-  Casa.abrir("DEMO", "responsavel");
+  Casa.abrir("DEMO", "responsavel", Casa.SEMENTE);
 
   var quemCuida = criarApp(el("fone-resp"), "responsavel", .74);
   var pessoaCuidada = criarApp(el("fone-idoso"), "idoso", .74);

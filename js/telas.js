@@ -97,7 +97,7 @@
       '<div class="rodape">' +
         '<div class="status-linha"><span class="bolinha" data-el="bolinha-app"></span><span data-el="status-app"></span></div>' +
         '<button class="voltar-txt" data-acao="pedir-avisos" data-el="btn-avisos" hidden>Ativar os avisos de horário</button>' +
-        '<button class="voltar-txt" data-acao="desparear" data-el="btn-trocar" hidden>Este aparelho não é o certo</button>' +
+        '<button class="voltar-txt" data-acao="trocar-perfil" data-el="btn-trocar" hidden>Trocar de perfil</button>' +
       '</div>' +
     '</section>' +
 
@@ -113,6 +113,7 @@
 
     // ---------- quem cuida ----------
     '<section class="tela" data-tela="responsavel" hidden>' +
+      '<p class="ola-usuario" data-el="ola-usuario" hidden></p>' +
       '<div class="bloco">' +
         '<h3>Como foi o dia</h3>' +
         '<p class="nota">Os últimos 7 dias. ✓ feito · ✕ não feito · – sem resposta.</p>' +
@@ -169,7 +170,7 @@
         '<div class="campos">' +
           '<button class="botao claro" data-acao="espiar">Ver a tela dela</button>' +
           '<button class="botao claro" data-acao="imprimir">Imprimir agenda de papel</button>' +
-          '<button class="botao claro" data-acao="desparear">Desligar este aparelho da casa</button></div>' +
+          '<button class="botao claro" data-acao="trocar-perfil" data-el="btn-trocar-resp">Trocar de perfil</button></div>' +
       '</div>' +
     '</section>' +
 
@@ -192,7 +193,8 @@
   // ============================================================
   // MONTA UM APP
   // ============================================================
-  function criarApp(caixa, papel, escalaBase) {
+  // usuario: o nome de quem entrou neste perfil (opcional).
+  function criarApp(caixa, papel, escalaBase, usuario) {
     caixa.innerHTML = HTML_TELAS;
 
     var raiz = caixa.querySelector(".app");
@@ -258,7 +260,7 @@
     function inicio() {
       var p = Casa.cadastro.perfil || {};
       $("saudacao").textContent = saudacaoDaHora();
-      $("nome-pessoa").textContent = ((p.trato || "") + " " + (p.nome || "")).trim() || "Bem-vindo";
+      $("nome-pessoa").textContent = ((p.trato || "") + " " + (p.nome || "")).trim() || usuario || "Bem-vindo";
       $("data-hoje").textContent = porExtenso(new Date());
 
       selo("selo-remedios", Casa.cadastro.remedios);
@@ -537,7 +539,7 @@
 
       if (acao === "espiar") return ir("inicio");
       if (acao === "imprimir") { montarAgenda(); return window.print(); }
-      if (acao === "desparear" && window.Aparelho) return window.Aparelho.desligar();
+      if (acao === "trocar-perfil" && window.Aparelho) return window.Aparelho.sair();
     });
 
     raiz.addEventListener("change", function (ev) {
@@ -556,7 +558,10 @@
     // ---------- liga na casa ----------
     Casa.assinar(desenhar);
     $("nc-data").value = Casa.hoje();
-    $("btn-trocar").hidden = (papel !== "idoso");
+    // Trocar de perfil so existe no app de verdade, nao na demonstracao.
+    $("btn-trocar").hidden = (papel !== "idoso" || naDemo);
+    $("btn-trocar-resp").hidden = naDemo;
+    if (usuario && papel === "responsavel") { $("ola-usuario").textContent = "Olá, " + usuario; $("ola-usuario").hidden = false; }
     ir(telaBase);
     if (papel === "idoso") { checar(); relogioLembrete = setInterval(checar, 30000); }
 

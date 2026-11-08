@@ -2,7 +2,7 @@
    Mexeu em algum arquivo? Suba o numero da VERSAO abaixo — e so isso.
    O celular troca os arquivos velhos pelos novos sozinho. */
 
-const VERSAO = "viva-4";
+const VERSAO = "viva-5";
 
 const ARQUIVOS = [
   "./",
