@@ -392,9 +392,11 @@
 
     function relatorio() {
       var dias = [];
-      for (var i = 6; i >= 0; i--) {
+      // Hoje na primeira coluna: no celular a tabela rola para o lado,
+      // e o dia que mais importa nao pode ficar escondido no fim.
+      for (var i = 0; i <= 6; i++) {
         var d = new Date(); d.setDate(d.getDate() - i);
-        dias.push({ chave: chaveDia(d), rot: pad(d.getDate()) + "/" + pad(d.getMonth() + 1) });
+        dias.push({ chave: chaveDia(d), rot: i === 0 ? "Hoje" : pad(d.getDate()) + "/" + pad(d.getMonth() + 1) });
       }
       var itens = Casa.cadastro.remedios.map(function (r) { return { id: r.id, nome: r.hora + " " + r.nome }; })
         .concat(Casa.cadastro.exercicios.map(function (e) { return { id: e.id, nome: e.nome }; }));

@@ -463,18 +463,23 @@ input:focus, select:focus { outline: none; border-color: var(--azul); }
 /* ============================================================
    O ÚNICO ARQUIVO QUE VOCÊ PRECISA EDITAR.
 
-   Enquanto estiver assim, o app funciona normalmente — só que
-   cada celular guarda os dados por conta própria, sem ligação
-   entre eles.
+   Configuração do projeto Firebase "viva-com-cuidado".
+   É isto que liga os dois aparelhos (quem cuida e quem é
+   cuidado) pela internet. O passo a passo está no LEIA-ME.md.
 
-   Para ligar os dois aparelhos, cole aqui os dados do seu
-   projeto Firebase. O passo a passo está no LEIA-ME.md.
+   Estes valores não são segredo: ficam visíveis no app de
+   qualquer forma. O que protege os dados são as regras do
+   Realtime Database.
    ============================================================ */
 
 window.CONFIG_FIREBASE = {
-  apiKey: "",
-  databaseURL: "",
-  projectId: ""
+  apiKey: "AIzaSyDpIsmAgXg0cDOENmb_twvceHdTQFMom7g",
+  authDomain: "viva-com-cuidado.firebaseapp.com",
+  databaseURL: "https://viva-com-cuidado-default-rtdb.firebaseio.com",
+  projectId: "viva-com-cuidado",
+  storageBucket: "viva-com-cuidado.firebasestorage.app",
+  messagingSenderId: "662168759026",
+  appId: "1:662168759026:web:884420d11f87cc3d617e6b"
 };
 
 
@@ -762,10 +767,10 @@ window.Casa = (function () {
     esquecerTodos: function () { this.ouvintes = []; },
     avisar: function () { this.ouvintes.forEach(function (f) { try { f(); } catch (e) {} }); },
 
-    // ---------- liga o Firebase, se houver ----------
+    // ---------- liga o servidor: Firebase se houver; senao, o servidor.js da casa ----------
     ligarServidor: function () {
       var cfg = window.CONFIG_FIREBASE || {};
-      if (!cfg.databaseURL || !window.firebase) { this.estado = "sozinha"; return false; }
+      if (!cfg.databaseURL || !window.firebase) { this.estado = "sozinha"; this._procurarServidorDaCasa(); return false; }
       try {
         if (!firebase.apps.length) firebase.initializeApp(cfg);
         this._bd = firebase.database();
@@ -782,7 +787,62 @@ window.Casa = (function () {
       }
     },
 
-    temServidor: function () { return !!this._bd; },
+    temServidor: function () { return !!this._bd || this._api; },
+
+    // ---------- servidor da casa (servidor.js), quando nao ha Firebase ----------
+    // Existe quando o app foi aberto pelo endereco do servidor.js.
+    // Aberto direto do arquivo, ou num site sem ele, o ping falha e o
+    // aparelho segue guardando os dados sozinho, como antes.
+    _api: false,
+    _eventos: null,
+    _naoEnviado: {},
+
+    _procurarServidorDaCasa: function () {
+      var eu = this;
+      if (location.protocol === "file:" || !window.fetch || !window.EventSource) return;
+      fetch("api/ping", { cache: "no-store" }).then(function (r) {
+        if (!r.ok) return;
+        eu._api = true;
+        eu.estado = "procurando";
+        eu.avisar();
+        if (eu.codigo) eu._escutarServidorDaCasa();   // a casa abriu antes da resposta chegar
+      }).catch(function () {});
+    },
+
+    _escutarServidorDaCasa: function () {
+      var eu = this;
+      var es = new EventSource("api/casas/" + encodeURIComponent(eu.codigo) + "/eventos");
+      eu._eventos = es;
+      var arrumar = { cadastro: arrumarCadastro, registro: arrumarRegistro };
+
+      es.onopen = function () {
+        eu.estado = "ligada";
+        // O que nao conseguiu subir enquanto a rede estava fora sobe agora,
+        // antes de o servidor mandar o estado dele por cima.
+        Object.keys(eu._naoEnviado).forEach(function (parte) { eu._publicar(parte); });
+        eu._naoEnviado = {};
+        eu.avisar();
+      };
+      es.onerror = function () {
+        // O EventSource tenta de novo sozinho a cada 3 segundos.
+        eu.estado = "procurando";
+        eu.avisar();
+      };
+      es.onmessage = function (ev) {
+        var msg;
+        try { msg = JSON.parse(ev.data); } catch (e) { return; }
+        if (!arrumar[msg.parte]) return;
+        // Casa nova: quem cuida e o dono do cadastro, entao e ele quem o cria.
+        if (msg.valor === null) {
+          if (msg.parte === "cadastro" && eu.papel === "responsavel") eu._publicar("cadastro");
+          return;
+        }
+        if (eu._pendentes[msg.parte]) return;   // temos mudanca local por enviar: ela vale mais
+        eu[msg.parte] = arrumar[msg.parte](msg.valor);
+        eu._gravarLocal();
+        eu.avisar();
+      };
+    },
 
     // ---------- abre uma casa ----------
     abrir: function (codigo, papel) {
@@ -797,9 +857,9 @@ window.Casa = (function () {
       eu.registro = arrumarRegistro(local && local.registro);
       eu.avisar();
 
-      if (!eu._bd) return;
-
       // 2. e o servidor manda o que houver de mais novo
+      if (eu._api) return eu._escutarServidorDaCasa();
+      if (!eu._bd) return;
       eu._escutar("cadastro", arrumarCadastro);
       eu._escutar("registro", arrumarRegistro);
     },
@@ -807,6 +867,7 @@ window.Casa = (function () {
     fechar: function () {
       this._refs.forEach(function (r) { try { r.off(); } catch (e) {} });
       this._refs = [];
+      if (this._eventos) { this._eventos.close(); this._eventos = null; }
     },
 
     _caminho: function (parte) { return "casas/" + this.codigo + "/" + parte; },
@@ -844,10 +905,23 @@ window.Casa = (function () {
     // Junta as gravacoes de 400ms num envio so — evita mandar a cada toque.
     _publicar: function (parte) {
       var eu = this;
-      if (!eu._bd || !eu.codigo) return;
+      if ((!eu._bd && !eu._api) || !eu.codigo) return;
       clearTimeout(eu._pendentes[parte]);
       eu._pendentes[parte] = setTimeout(function () {
         eu._pendentes[parte] = null;
+        if (eu._api) {
+          fetch("api/casas/" + encodeURIComponent(eu.codigo) + "/" + parte, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(eu[parte])
+          }).then(function (r) {
+            if (!r.ok) throw new Error(r.status);
+          }).catch(function () {
+            eu._naoEnviado[parte] = true;   // sobe de novo quando a conexao voltar
+            eu.estado = "procurando"; eu.avisar();
+          });
+          return;
+        }
         eu._bd.ref(eu._caminho(parte)).set(clonar(eu[parte])).catch(function () {
           eu.estado = "sozinha"; eu.avisar();
         });
@@ -1284,9 +1358,11 @@ window.Casa = (function () {
 
     function relatorio() {
       var dias = [];
-      for (var i = 6; i >= 0; i--) {
+      // Hoje na primeira coluna: no celular a tabela rola para o lado,
+      // e o dia que mais importa nao pode ficar escondido no fim.
+      for (var i = 0; i <= 6; i++) {
         var d = new Date(); d.setDate(d.getDate() - i);
-        dias.push({ chave: chaveDia(d), rot: pad(d.getDate()) + "/" + pad(d.getMonth() + 1) });
+        dias.push({ chave: chaveDia(d), rot: i === 0 ? "Hoje" : pad(d.getDate()) + "/" + pad(d.getMonth() + 1) });
       }
       var itens = Casa.cadastro.remedios.map(function (r) { return { id: r.id, nome: r.hora + " " + r.nome }; })
         .concat(Casa.cadastro.exercicios.map(function (e) { return { id: e.id, nome: e.nome }; }));
